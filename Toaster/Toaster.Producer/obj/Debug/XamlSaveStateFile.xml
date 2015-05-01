@@ -1,0 +1,8 @@
+<XamlCompilerSaveState>
+  <ReferenceAssemblyList>
+  </ReferenceAssemblyList>
+  <XamlSourceFileDataList>
+    <XamlSourceFileData XamlFileName="App.xaml" XamlFileTimeAtLastCompileInTicks="635647773639406884" ClassFullName="Toaster.Producer.App" />
+    <XamlSourceFileData XamlFileName="MainPage.xaml" XamlFileTimeAtLastCompileInTicks="635647773639676900" ClassFullName="Toaster.Producer.MainPage" />
+  </XamlSourceFileDataList>
+</XamlCompilerSaveState>

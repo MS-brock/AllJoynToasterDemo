@@ -1,0 +1,18 @@
+﻿<Page
+    x:Class="Toaster.Consumer.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Toaster.Consumer"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Width="457.045" Height="441.836">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+		<Button x:Name="StartToastingButton" Content="Start Toasting" HorizontalAlignment="Left" Margin="81,194,0,0" VerticalAlignment="Top" Click="StartToastingButton_Click"/>
+		<Button x:Name="StopToastingButton" Content="Stop Toasting" HorizontalAlignment="Left" Margin="239,194,0,0" VerticalAlignment="Top" Click="StopToastingButton_Click"/>
+		<Slider x:Name="DarknessSlider" HorizontalAlignment="Left" Margin="172,280,0,0" VerticalAlignment="Top" Width="177" ValueChanged="DarknessSlider_ValueChanged" Maximum="10"/>
+		<TextBlock x:Name="DarknessSliderText" HorizontalAlignment="Left" Margin="81,289,0,0" TextWrapping="Wrap" Text="Darkness:" VerticalAlignment="Top"/>
+		<TextBlock x:Name="TitleText" HorizontalAlignment="Left" Margin="81,59,0,0" TextWrapping="Wrap" Text="AllJoyn Connected Toaster" VerticalAlignment="Top" Width="290" Height="90" FontSize="32"/>
+
+    </Grid>
+</Page>
