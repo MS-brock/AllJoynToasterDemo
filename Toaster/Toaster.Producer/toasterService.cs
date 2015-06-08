@@ -26,7 +26,7 @@ namespace Toaster.Producer
 		{
 			Task<toasterStartToastingResult> task = new Task<toasterStartToastingResult>(() =>
 			{
-				_toasterSignals.ToastDone(AllJoynStatus.Ok);
+				Task.Delay(TimeSpan.FromSeconds(darkness)).ContinueWith(_ => _toasterSignals.ToastDone(AllJoynStatus.Ok));
 				return toasterStartToastingResult.CreateSuccessResult();
 			});
 
