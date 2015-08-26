@@ -5,28 +5,27 @@
 //   Changes to this file may cause incorrect behavior and will be lost if  
 //   the code is regenerated.
 //
-//   Tool: AllJoynCodeGen.exe
-//   Version: 1.0.0
+//   Tool: AllJoynCodeGenerator.exe
 //
 //   This tool is located in the Windows 10 SDK and the Windows 10 AllJoyn 
-//   Visual Studio Extension in the Visual Studio Extension Gallery.  
+//   Visual Studio Extension in the Visual Studio Gallery.  
 //
 //   The generated code should be packaged in a Windows 10 C++/CX Runtime  
-//   Component which can be consumed in any UAP-supported language using 
+//   Component which can be consumed in any UWP-supported language using 
 //   APIs that are available in Windows.Devices.AllJoyn.
 //
-//   Using AllJoynCodeGen - Invoke the following command with a valid 
-//   Introspection XML file:
-//     AllJoynCodeGen -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
+//   Using AllJoynCodeGenerator - Invoke the following command with a valid 
+//   Introspection XML file and a writable output directory:
+//     AllJoynCodeGenerator -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
 // </auto-generated>
 //-----------------------------------------------------------------------------
 #pragma once
 
-namespace com { namespace microsoft { namespace sample {
+namespace org { namespace alljoyn { namespace example { namespace Toaster {
 
-ref class toasterConsumer;
+ref class ToasterConsumer;
 
-public ref class toasterStartToastingResult sealed
+public ref class ToasterStartToastingResult sealed
 {
 public:
     property int32 Status
@@ -37,16 +36,16 @@ public:
     }
 
     
-    static toasterStartToastingResult^ CreateSuccessResult()
+    static ToasterStartToastingResult^ CreateSuccessResult()
     {
-        auto result = ref new toasterStartToastingResult();
+        auto result = ref new ToasterStartToastingResult();
         result->Status = Windows::Devices::AllJoyn::AllJoynStatus::Ok;
         return result;
     }
     
-    static toasterStartToastingResult^ CreateFailureResult(_In_ int32 status)
+    static ToasterStartToastingResult^ CreateFailureResult(_In_ int32 status)
     {
-        auto result = ref new toasterStartToastingResult();
+        auto result = ref new ToasterStartToastingResult();
         result->Status = status;
         return result;
     }
@@ -55,7 +54,7 @@ private:
     int32 m_status;
 };
 
-public ref class toasterStopToastingResult sealed
+public ref class ToasterStopToastingResult sealed
 {
 public:
     property int32 Status
@@ -66,16 +65,16 @@ public:
     }
 
     
-    static toasterStopToastingResult^ CreateSuccessResult()
+    static ToasterStopToastingResult^ CreateSuccessResult()
     {
-        auto result = ref new toasterStopToastingResult();
+        auto result = ref new ToasterStopToastingResult();
         result->Status = Windows::Devices::AllJoyn::AllJoynStatus::Ok;
         return result;
     }
     
-    static toasterStopToastingResult^ CreateFailureResult(_In_ int32 status)
+    static ToasterStopToastingResult^ CreateFailureResult(_In_ int32 status)
     {
-        auto result = ref new toasterStopToastingResult();
+        auto result = ref new ToasterStopToastingResult();
         result->Status = status;
         return result;
     }
@@ -84,7 +83,7 @@ private:
     int32 m_status;
 };
 
-public ref class toasterJoinSessionResult sealed
+public ref class ToasterJoinSessionResult sealed
 {
 public:
     property int32 Status
@@ -94,19 +93,19 @@ public:
         void set(_In_ int32 value) { m_status = value; }
     }
 
-    property toasterConsumer^ Consumer
+    property ToasterConsumer^ Consumer
     {
-        toasterConsumer^ get() { return m_consumer; }
+        ToasterConsumer^ get() { return m_consumer; }
     internal:
-        void set(_In_ toasterConsumer^ value) { m_consumer = value; }
+        void set(_In_ ToasterConsumer^ value) { m_consumer = value; }
     };
 
 private:
     int32 m_status;
-    toasterConsumer^ m_consumer;
+    ToasterConsumer^ m_consumer;
 };
 
-public ref class toasterGetDarknessResult sealed
+public ref class ToasterGetVersionResult sealed
 {
 public:
     property int32 Status
@@ -116,31 +115,96 @@ public:
         void set(_In_ int32 value) { m_status = value; }
     }
 
-    property uint32 Darkness
+    property uint16 Version
     {
-        uint32 get() { return m_value; }
+        uint16 get() { return m_value; }
     internal:
-        void set(_In_ uint32 value) { m_value = value; }
+        void set(_In_ uint16 value) { m_value = value; }
     }
 
-    static toasterGetDarknessResult^ CreateSuccessResult(_In_ uint32 value)
+    static ToasterGetVersionResult^ CreateSuccessResult(_In_ uint16 value)
     {
-        auto result = ref new toasterGetDarknessResult();
+        auto result = ref new ToasterGetVersionResult();
         result->Status = Windows::Devices::AllJoyn::AllJoynStatus::Ok;
-        result->Darkness = value;
+        result->Version = value;
         return result;
     }
 
-    static toasterGetDarknessResult^ CreateFailureResult(_In_ int32 status)
+    static ToasterGetVersionResult^ CreateFailureResult(_In_ int32 status)
     {
-        auto result = ref new toasterGetDarknessResult();
+        auto result = ref new ToasterGetVersionResult();
         result->Status = status;
         return result;
     }
 
 private:
     int32 m_status;
-    uint32 m_value;
+    uint16 m_value;
 };
 
-} } } 
+public ref class ToasterGetDarknessLevelResult sealed
+{
+public:
+    property int32 Status
+    {
+        int32 get() { return m_status; }
+    internal:
+        void set(_In_ int32 value) { m_status = value; }
+    }
+
+    property byte DarknessLevel
+    {
+        byte get() { return m_value; }
+    internal:
+        void set(_In_ byte value) { m_value = value; }
+    }
+
+    static ToasterGetDarknessLevelResult^ CreateSuccessResult(_In_ byte value)
+    {
+        auto result = ref new ToasterGetDarknessLevelResult();
+        result->Status = Windows::Devices::AllJoyn::AllJoynStatus::Ok;
+        result->DarknessLevel = value;
+        return result;
+    }
+
+    static ToasterGetDarknessLevelResult^ CreateFailureResult(_In_ int32 status)
+    {
+        auto result = ref new ToasterGetDarknessLevelResult();
+        result->Status = status;
+        return result;
+    }
+
+private:
+    int32 m_status;
+    byte m_value;
+};
+
+public ref class ToasterSetDarknessLevelResult sealed
+{
+public:
+    property int32 Status
+    {
+        int32 get() { return m_status; }
+    internal:
+        void set(_In_ int32 value) { m_status = value; }
+    }
+
+    static ToasterSetDarknessLevelResult^ CreateSuccessResult()
+    {
+        auto result = ref new ToasterSetDarknessLevelResult();
+        result->Status = Windows::Devices::AllJoyn::AllJoynStatus::Ok;
+        return result;
+    }
+
+    static ToasterSetDarknessLevelResult^ CreateFailureResult(_In_ int32 status)
+    {
+        auto result = ref new ToasterSetDarknessLevelResult();
+        result->Status = status;
+        return result;
+    }
+
+private:
+    int32 m_status;
+};
+
+} } } } 

@@ -5,48 +5,49 @@
 //   Changes to this file may cause incorrect behavior and will be lost if  
 //   the code is regenerated.
 //
-//   Tool: AllJoynCodeGen.exe
-//   Version: 1.0.0
+//   Tool: AllJoynCodeGenerator.exe
 //
 //   This tool is located in the Windows 10 SDK and the Windows 10 AllJoyn 
-//   Visual Studio Extension in the Visual Studio Extension Gallery.  
+//   Visual Studio Extension in the Visual Studio Gallery.  
 //
 //   The generated code should be packaged in a Windows 10 C++/CX Runtime  
-//   Component which can be consumed in any UAP-supported language using 
+//   Component which can be consumed in any UWP-supported language using 
 //   APIs that are available in Windows.Devices.AllJoyn.
 //
-//   Using AllJoynCodeGen - Invoke the following command with a valid 
-//   Introspection XML file:
-//     AllJoynCodeGen -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
+//   Using AllJoynCodeGenerator - Invoke the following command with a valid 
+//   Introspection XML file and a writable output directory:
+//     AllJoynCodeGenerator -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
 // </auto-generated>
 //-----------------------------------------------------------------------------
 #pragma once
 
-namespace com { namespace microsoft { namespace sample {
+namespace org { namespace alljoyn { namespace example { namespace Toaster {
 
 // This class, and the associated EventArgs classes, exist for the benefit of JavaScript developers who
-// do not have the ability to implement ItoasterService. Instead, toasterServiceEventAdapter
+// do not have the ability to implement IToasterService. Instead, ToasterServiceEventAdapter
 // provides the Interface implementation and exposes a set of compatible events to the developer.
-public ref class toasterServiceEventAdapter sealed : [Windows::Foundation::Metadata::Default] ItoasterService
+public ref class ToasterServiceEventAdapter sealed : [Windows::Foundation::Metadata::Default] IToasterService
 {
 public:
     // Method Invocation Events
-    event Windows::Foundation::TypedEventHandler<toasterServiceEventAdapter^, toasterStartToastingCalledEventArgs^>^ StartToastingCalled;
-    event Windows::Foundation::TypedEventHandler<toasterServiceEventAdapter^, toasterStopToastingCalledEventArgs^>^ StopToastingCalled;
+    event Windows::Foundation::TypedEventHandler<ToasterServiceEventAdapter^, ToasterStartToastingCalledEventArgs^>^ StartToastingCalled;
+    event Windows::Foundation::TypedEventHandler<ToasterServiceEventAdapter^, ToasterStopToastingCalledEventArgs^>^ StopToastingCalled;
 
     // Property Read Events
-    event Windows::Foundation::TypedEventHandler<toasterServiceEventAdapter^, toasterGetDarknessRequestedEventArgs^>^ GetDarknessRequested;
+    event Windows::Foundation::TypedEventHandler<ToasterServiceEventAdapter^, ToasterGetVersionRequestedEventArgs^>^ GetVersionRequested;
+    event Windows::Foundation::TypedEventHandler<ToasterServiceEventAdapter^, ToasterGetDarknessLevelRequestedEventArgs^>^ GetDarknessLevelRequested;
     
     // Property Write Events
-    event Windows::Foundation::TypedEventHandler<toasterServiceEventAdapter^, toasterSetDarknessRequestedEventArgs^>^ SetDarknessRequested;
+    event Windows::Foundation::TypedEventHandler<ToasterServiceEventAdapter^, ToasterSetDarknessLevelRequestedEventArgs^>^ SetDarknessLevelRequested;
 
-    // ItoasterService Implementation
-    virtual Windows::Foundation::IAsyncOperation<toasterStartToastingResult^>^ StartToastingAsync(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
-    virtual Windows::Foundation::IAsyncOperation<toasterStopToastingResult^>^ StopToastingAsync(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
+    // IToasterService Implementation
+    virtual Windows::Foundation::IAsyncOperation<ToasterStartToastingResult^>^ StartToastingAsync(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
+    virtual Windows::Foundation::IAsyncOperation<ToasterStopToastingResult^>^ StopToastingAsync(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
 
-    virtual Windows::Foundation::IAsyncOperation<toasterGetDarknessResult^>^ GetDarknessAsync(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
+    virtual Windows::Foundation::IAsyncOperation<ToasterGetVersionResult^>^ GetVersionAsync(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
+    virtual Windows::Foundation::IAsyncOperation<ToasterGetDarknessLevelResult^>^ GetDarknessLevelAsync(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
 
-    virtual Windows::Foundation::IAsyncOperation<int>^ SetDarknessAsync(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info, _In_ uint32 value);
+    virtual Windows::Foundation::IAsyncOperation<ToasterSetDarknessLevelResult^>^ SetDarknessLevelAsync(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info, _In_ byte value);
 };
 
-} } } 
+} } } } 

@@ -4,95 +4,143 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.AllJoyn;
-using com.microsoft.sample;
-using Windows.UI.Notifications;
-using Windows.Data.Xml.Dom;
+using org.alljoyn.example.Toaster;
 
 namespace Toaster.Consumer
 {
 	class ToasterClient
 	{
-		private toasterConsumer _toasterConsumer;
-		private AllJoynBusAttachment toasterBusAttachment;
-		private uint darkness;
+		UInt16 toasterVersion;
+		byte darknessLevel;
 
+		ToasterConsumer toasterConsumer;
+		
 		public ToasterClient()
 		{
-			_toasterConsumer = null;
-			toasterBusAttachment = new AllJoynBusAttachment();
-			StartWatcher();
+			toasterVersion = 0;
+			darknessLevel = 0;			
 		}
 
-		private void StartWatcher()
+		public void FindToaster()
 		{
-			toasterWatcher _toasterWatcher = new toasterWatcher(toasterBusAttachment);
-			_toasterWatcher.Added += toasterWatcher_Added;
-			_toasterWatcher.Start();
+			AllJoynBusAttachment toasterBusAttachment = new AllJoynBusAttachment();
+			ToasterWatcher toasterWatcher = new ToasterWatcher(toasterBusAttachment);
+			toasterWatcher.Added += ToasterWatcher_Added;
+			toasterWatcher.Start();
 		}
 
-		private async void toasterWatcher_Added(toasterWatcher sender, AllJoynServiceInfo args)
+		public event EventHandler ToasterProducerFound;
+
+		protected virtual void OnToasterProducerFound(EventArgs e)
 		{
-
-			toasterJoinSessionResult joinResult = await toasterConsumer.JoinSessionAsync(args, sender);
-
-			if (joinResult.Status == AllJoynStatus.Ok)
+			EventHandler handler = ToasterProducerFound;
+			if (handler != null)
 			{
-				_toasterConsumer = joinResult.Consumer;
-				_toasterConsumer.Signals.ToastDoneReceived += ToastDoneReceived_Signal;
-				RetrieveDarkness();
-			}
-			else
-			{
-				System.Diagnostics.Debug.WriteLine("Joining the session went wrong");
+				handler(this, e);
 			}
 		}
 
-        public void ToastDoneReceived_Signal(toasterSignals sender, toasterToastDoneReceivedEventArgs args)
+		private async void ToasterWatcher_Added(ToasterWatcher sender, AllJoynServiceInfo args)
 		{
-			//Show UI Toast
-			ToastTemplateType toastTemplate = ToastTemplateType.ToastText02;
-			XmlDocument toastXml = ToastNotificationManager.GetTemplateContent(toastTemplate);
+			ToasterJoinSessionResult toasterJoinSessionResult = await ToasterConsumer.JoinSessionAsync(args, sender);
 
-			//Populate UI Toast
-			XmlNodeList toastTextElements = toastXml.GetElementsByTagName("text");
-			toastTextElements[0].AppendChild(toastXml.CreateTextNode("Toast Done"));
+			if (toasterJoinSessionResult.Status == AllJoynStatus.Ok)
+			{
+				toasterConsumer = toasterJoinSessionResult.Consumer;
+				
+				GetToasterVersion();
+				GetToasterDarknessLevel();
 
-			//Create and Send UI Toast
-			ToastNotification toast = new ToastNotification(toastXml);
-			ToastNotificationManager.CreateToastNotifier().Show(toast);
+				OnToasterProducerFound(EventArgs.Empty);
+			}
+		}
+
+		public ToasterConsumer Consumer
+		{
+			get
+			{
+				if (toasterConsumer != null)
+				{
+					return toasterConsumer;
+				}
+				else
+					return null;
+			}
+		}
+
+		public UInt16 ToasterVersion
+		{
+			get
+			{
+				return toasterVersion;			
+			}
+		}
+
+		public byte DarknessLevel
+		{
+			get
+			{
+				GetToasterDarknessLevel();
+				return darknessLevel;
+			}
+			set
+			{
+				if (toasterConsumer != null)
+				{
+					darknessLevel = value;
+					SetToasterDarknessLevel();
+				}				
+			}
+		}
+
+		private async void GetToasterDarknessLevel()
+		{
+			ToasterGetDarknessLevelResult toasterGetDarknessLevelResult = await toasterConsumer.GetDarknessLevelAsync();
+			if (toasterGetDarknessLevelResult.Status == AllJoynStatus.Ok)
+			{
+				darknessLevel = toasterGetDarknessLevelResult.DarknessLevel;
+			}
+		}
+
+		private async void SetToasterDarknessLevel()
+		{
+			ToasterSetDarknessLevelResult toasterSetDarknessLevelResult = await toasterConsumer.SetDarknessLevelAsync(darknessLevel);
+			if (toasterSetDarknessLevelResult.Status == AllJoynStatus.Ok)
+			{
+				// success
+			}
+		}
+
+		private async void GetToasterVersion()
+		{
+			ToasterGetVersionResult toasterGetVersionResult = await toasterConsumer.GetVersionAsync();
+			if (toasterGetVersionResult.Status == AllJoynStatus.Ok)
+			{
+				toasterVersion = toasterGetVersionResult.Version;
+			}
 		}
 
 		public async void StartToasting()
 		{
-			if (_toasterConsumer != null)
+			if (toasterConsumer != null)
 			{
-				await _toasterConsumer.StartToastingAsync();
-			}			
+				ToasterStartToastingResult toasterStartToastingResult = await toasterConsumer.StartToastingAsync();
+				if (toasterStartToastingResult.Status == AllJoynStatus.Ok)
+				{
+					// success
+				}
+			}
 		}
 
 		public async void StopToasting()
 		{
-			if (_toasterConsumer != null)
+			if (toasterConsumer != null)
 			{
-				await _toasterConsumer.StopToastingAsync();
-			}
-		}
-
-		public async void SetDarkness(int newDarkness)
-		{
-			if (_toasterConsumer != null)
-			{
-				darkness = uint.Parse(newDarkness.ToString());
-				await _toasterConsumer.SetDarknessAsync(darkness);
-			}
-		}
-
-		public async void RetrieveDarkness()
-		{
-			if (_toasterConsumer != null)
-			{
-				toasterGetDarknessResult darknessResult = await _toasterConsumer.GetDarknessAsync();
-				darkness = darknessResult.Darkness;
+				ToasterStopToastingResult toasterStopToastingResult = await toasterConsumer.StopToastingAsync();
+				if (toasterStopToastingResult.Status == AllJoynStatus.Ok)
+				{
+					// success
+				}
 			}
 		}
 	}

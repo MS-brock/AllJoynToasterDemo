@@ -5,19 +5,18 @@
 //   Changes to this file may cause incorrect behavior and will be lost if  
 //   the code is regenerated.
 //
-//   Tool: AllJoynCodeGen.exe
-//   Version: 1.0.0
+//   Tool: AllJoynCodeGenerator.exe
 //
 //   This tool is located in the Windows 10 SDK and the Windows 10 AllJoyn 
-//   Visual Studio Extension in the Visual Studio Extension Gallery.  
+//   Visual Studio Extension in the Visual Studio Gallery.  
 //
 //   The generated code should be packaged in a Windows 10 C++/CX Runtime  
-//   Component which can be consumed in any UAP-supported language using 
+//   Component which can be consumed in any UWP-supported language using 
 //   APIs that are available in Windows.Devices.AllJoyn.
 //
-//   Using AllJoynCodeGen - Invoke the following command with a valid 
-//   Introspection XML file:
-//     AllJoynCodeGen -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
+//   Using AllJoynCodeGenerator - Invoke the following command with a valid 
+//   Introspection XML file and a writable output directory:
+//     AllJoynCodeGenerator -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
 // </auto-generated>
 //-----------------------------------------------------------------------------
 #include "pch.h"
@@ -27,7 +26,7 @@ using namespace Platform;
 using namespace Windows::Foundation;
 using namespace Windows::Foundation::Collections;
 using namespace Windows::Devices::AllJoyn;
-using namespace com::microsoft::sample;
+using namespace org::alljoyn::example::Toaster;
 
 // Note: Unlike an Interface implementation, which provides a single handler for each member, the event
 // model allows for 0 or more listeners to be registered. The EventAdapter implementation deals with this
@@ -35,41 +34,50 @@ using namespace com::microsoft::sample;
 // is handled by returning a null result.
 
 // Methods
-IAsyncOperation<toasterStartToastingResult^>^ toasterServiceEventAdapter::StartToastingAsync(_In_ AllJoynMessageInfo^ info)
+IAsyncOperation<ToasterStartToastingResult^>^ ToasterServiceEventAdapter::StartToastingAsync(_In_ AllJoynMessageInfo^ info)
 {
-    auto args = ref new toasterStartToastingCalledEventArgs(info);
+    auto args = ref new ToasterStartToastingCalledEventArgs(info);
     AllJoynHelpers::DispatchEvent([=]() {
         StartToastingCalled(this, args);
     });
-    return toasterStartToastingCalledEventArgs::GetResultAsync(args);
+    return ToasterStartToastingCalledEventArgs::GetResultAsync(args);
 }
 
-IAsyncOperation<toasterStopToastingResult^>^ toasterServiceEventAdapter::StopToastingAsync(_In_ AllJoynMessageInfo^ info)
+IAsyncOperation<ToasterStopToastingResult^>^ ToasterServiceEventAdapter::StopToastingAsync(_In_ AllJoynMessageInfo^ info)
 {
-    auto args = ref new toasterStopToastingCalledEventArgs(info);
+    auto args = ref new ToasterStopToastingCalledEventArgs(info);
     AllJoynHelpers::DispatchEvent([=]() {
         StopToastingCalled(this, args);
     });
-    return toasterStopToastingCalledEventArgs::GetResultAsync(args);
+    return ToasterStopToastingCalledEventArgs::GetResultAsync(args);
 }
 
 // Property Reads
-IAsyncOperation<toasterGetDarknessResult^>^ toasterServiceEventAdapter::GetDarknessAsync(_In_ AllJoynMessageInfo^ info)
+IAsyncOperation<ToasterGetVersionResult^>^ ToasterServiceEventAdapter::GetVersionAsync(_In_ AllJoynMessageInfo^ info)
 {
-    auto args = ref new toasterGetDarknessRequestedEventArgs(info);
+    auto args = ref new ToasterGetVersionRequestedEventArgs(info);
     AllJoynHelpers::DispatchEvent([=]() {
-        GetDarknessRequested(this, args);
+        GetVersionRequested(this, args);
     });
-    return toasterGetDarknessRequestedEventArgs::GetResultAsync(args);
+    return ToasterGetVersionRequestedEventArgs::GetResultAsync(args);
+}
+
+IAsyncOperation<ToasterGetDarknessLevelResult^>^ ToasterServiceEventAdapter::GetDarknessLevelAsync(_In_ AllJoynMessageInfo^ info)
+{
+    auto args = ref new ToasterGetDarknessLevelRequestedEventArgs(info);
+    AllJoynHelpers::DispatchEvent([=]() {
+        GetDarknessLevelRequested(this, args);
+    });
+    return ToasterGetDarknessLevelRequestedEventArgs::GetResultAsync(args);
 }
 
 // Property Writes
-IAsyncOperation<int>^ toasterServiceEventAdapter::SetDarknessAsync(_In_ AllJoynMessageInfo^ info, _In_ uint32 value)
+IAsyncOperation<ToasterSetDarknessLevelResult^>^ ToasterServiceEventAdapter::SetDarknessLevelAsync(_In_ AllJoynMessageInfo^ info, _In_ byte value)
 {
-    auto args = ref new toasterSetDarknessRequestedEventArgs(info, value);
+    auto args = ref new ToasterSetDarknessLevelRequestedEventArgs(info, value);
     AllJoynHelpers::DispatchEvent([=]() {
-        SetDarknessRequested(this, args);
+        SetDarknessLevelRequested(this, args);
     });
-    return toasterSetDarknessRequestedEventArgs::GetResultAsync(args);
+    return ToasterSetDarknessLevelRequestedEventArgs::GetResultAsync(args);
 }
 

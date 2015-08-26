@@ -5,14 +5,15 @@
     xmlns:local="using:Toaster.Consumer"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Width="457.045" Height="441.836">
+    mc:Ignorable="d" Height="557.697">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<Button x:Name="StartToastingButton" Content="Start Toasting" HorizontalAlignment="Left" Margin="81,194,0,0" VerticalAlignment="Top" Click="StartToastingButton_Click"/>
-		<Button x:Name="StopToastingButton" Content="Stop Toasting" HorizontalAlignment="Left" Margin="239,194,0,0" VerticalAlignment="Top" Click="StopToastingButton_Click"/>
-		<Slider x:Name="DarknessSlider" HorizontalAlignment="Left" Margin="172,280,0,0" VerticalAlignment="Top" Width="177" ValueChanged="DarknessSlider_ValueChanged" Maximum="10"/>
-		<TextBlock x:Name="DarknessSliderText" HorizontalAlignment="Left" Margin="81,289,0,0" TextWrapping="Wrap" Text="Darkness:" VerticalAlignment="Top"/>
-		<TextBlock x:Name="TitleText" HorizontalAlignment="Left" Margin="81,59,0,0" TextWrapping="Wrap" Text="AllJoyn Connected Toaster" VerticalAlignment="Top" Width="290" Height="90" FontSize="32"/>
-
+        <TextBlock x:Name="ToasterTitle" HorizontalAlignment="Left" Margin="44,10,0,0" TextWrapping="Wrap" Text="AllJoyn Toaster Consumer" VerticalAlignment="Top" Height="87" Width="260" FontSize="24"/>
+        <Button x:Name="StartToastButton" Content="Start Toasting" HorizontalAlignment="Left" Margin="123,136,0,0" VerticalAlignment="Top" Click="StartToastButton_Click"/>
+        <Button x:Name="StopToastButton" Content="Stop Toasting" HorizontalAlignment="Left" Margin="123,206,0,0" VerticalAlignment="Top" Click="StopToastButton_Click"/>
+        <Slider x:Name="DarknessLevelSlider" HorizontalAlignment="Left" Margin="44,338,0,0" VerticalAlignment="Top" Width="260" LargeChange="2" Maximum="10" Minimum="1" ValueChanged="DarknessLevelSlider_ValueChanged"/>
+        <TextBlock x:Name="DarknessLevelSliderTitle" HorizontalAlignment="Left" Margin="123,320,0,0" TextWrapping="Wrap" Text="DarknessLevel" VerticalAlignment="Top" Width="110"/>
+        <TextBlock x:Name="ToasterVersionTitle" HorizontalAlignment="Left" Margin="44,454,0,0" TextWrapping="Wrap" Text="ToasterVersion: " VerticalAlignment="Top" Width="110"/>
+        <TextBlock x:Name="ToasterVersionText" HorizontalAlignment="Left" Margin="154,454,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="110" />
     </Grid>
 </Page>

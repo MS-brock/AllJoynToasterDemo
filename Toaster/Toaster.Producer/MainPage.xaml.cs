@@ -22,16 +22,74 @@ namespace Toaster.Producer
     /// </summary>
     public sealed partial class MainPage : Page
     {
-		private ToasterServer toasterServer;
+		ToasterServer toasterServer;
+		Windows.UI.Core.CoreDispatcher dispatcher;
+
         public MainPage()
         {
-            this.InitializeComponent();
-			toasterServer = new ToasterServer();
+			dispatcher = Window.Current.CoreWindow.Dispatcher;
+			InitializeToaster();
+            this.InitializeComponent();			
+			ToastingIndicator.IsEnabled = false;
+			SetVersionText();
         }
 
-		private void ToastDoneButton_Click(object sender, RoutedEventArgs e)
+		private void InitializeToaster()
 		{
-			toasterServer.ToastDoneSignal();
+			toasterServer = new ToasterServer();
+			toasterServer.Service.StartedToasting += Service_StartedToasting;
+			toasterServer.Service.StoppedToasting += Service_StoppedToasting;
+			toasterServer.Service.DarknessChanged += Service_DarknessChanged;			
+		}
+
+		private async void SetVersionText()
+		{
+			await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+			{
+				ToasterVersionText.Text = toasterServer.Service.ToasterVersion.ToString();
+			});
+		}
+
+		private void Service_DarknessChanged(object sender, EventArgs e)
+		{
+			UpdateSliderValue(toasterServer.Service.DarknessLevel);
+		}
+
+		private async void UpdateSliderValue(byte darknessLevel)
+		{
+			await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+			{
+				DarknessLevelSlider.Value = darknessLevel;
+			});
+		}
+
+		private async void Service_StoppedToasting(object sender, EventArgs e)
+		{
+			await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,() =>
+		    {
+				ToastingIndicator.IsEnabled = true;
+				ToastingIndicator.IsOn = false;
+				ToastingIndicator.IsEnabled = false;
+			});
+			
+		}
+
+		private async void Service_StartedToasting(object sender, EventArgs e)
+		{
+			await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+			{
+				ToastingIndicator.IsEnabled = true;
+				ToastingIndicator.IsOn = true;
+				ToastingIndicator.IsEnabled = false;
+			});
+		}
+		
+		private async void DarknessLevelSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+		{
+			await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+			{
+				toasterServer.DarknessChanged(Convert.ToByte(DarknessLevelSlider.Value));
+			});
 		}
 	}
 }

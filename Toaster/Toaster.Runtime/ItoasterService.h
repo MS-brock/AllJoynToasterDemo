@@ -5,44 +5,48 @@
 //   Changes to this file may cause incorrect behavior and will be lost if  
 //   the code is regenerated.
 //
-//   Tool: AllJoynCodeGen.exe
-//   Version: 1.0.0
+//   Tool: AllJoynCodeGenerator.exe
 //
 //   This tool is located in the Windows 10 SDK and the Windows 10 AllJoyn 
-//   Visual Studio Extension in the Visual Studio Extension Gallery.  
+//   Visual Studio Extension in the Visual Studio Gallery.  
 //
 //   The generated code should be packaged in a Windows 10 C++/CX Runtime  
-//   Component which can be consumed in any UAP-supported language using 
+//   Component which can be consumed in any UWP-supported language using 
 //   APIs that are available in Windows.Devices.AllJoyn.
 //
-//   Using AllJoynCodeGen - Invoke the following command with a valid 
-//   Introspection XML file:
-//     AllJoynCodeGen -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
+//   Using AllJoynCodeGenerator - Invoke the following command with a valid 
+//   Introspection XML file and a writable output directory:
+//     AllJoynCodeGenerator -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
 // </auto-generated>
 //-----------------------------------------------------------------------------
 #pragma once
 
-namespace com { namespace microsoft { namespace sample {
+namespace org { namespace alljoyn { namespace example { namespace Toaster {
 
-public interface class ItoasterService
+public interface class IToasterService
 {
 public:
-    // Implement this function to handle calls to the startToasting method.
-    Windows::Foundation::IAsyncOperation<toasterStartToastingResult^>^ StartToastingAsync(Windows::Devices::AllJoyn::AllJoynMessageInfo^ info );
+    // Implement this function to handle calls to the StartToasting method.
+    Windows::Foundation::IAsyncOperation<ToasterStartToastingResult^>^ StartToastingAsync(Windows::Devices::AllJoyn::AllJoynMessageInfo^ info );
 
-    // Implement this function to handle calls to the stopToasting method.
-    Windows::Foundation::IAsyncOperation<toasterStopToastingResult^>^ StopToastingAsync(Windows::Devices::AllJoyn::AllJoynMessageInfo^ info );
+    // Implement this function to handle calls to the StopToasting method.
+    Windows::Foundation::IAsyncOperation<ToasterStopToastingResult^>^ StopToastingAsync(Windows::Devices::AllJoyn::AllJoynMessageInfo^ info );
 
-    // Implement this function to handle requests for the value of the Darkness property.
+    // Implement this function to handle requests for the value of the Version property.
     //
     // Currently, info will always be null, because no information is available about the requestor.
-    Windows::Foundation::IAsyncOperation<toasterGetDarknessResult^>^ GetDarknessAsync(Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
+    Windows::Foundation::IAsyncOperation<ToasterGetVersionResult^>^ GetVersionAsync(Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
 
-    // Implement this function to handle requests to set the Darkness property.
+    // Implement this function to handle requests for the value of the DarknessLevel property.
     //
     // Currently, info will always be null, because no information is available about the requestor.
-    Windows::Foundation::IAsyncOperation<int>^ SetDarknessAsync(Windows::Devices::AllJoyn::AllJoynMessageInfo^ info, uint32 value);
+    Windows::Foundation::IAsyncOperation<ToasterGetDarknessLevelResult^>^ GetDarknessLevelAsync(Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
+
+    // Implement this function to handle requests to set the DarknessLevel property.
+    //
+    // Currently, info will always be null, because no information is available about the requestor.
+    Windows::Foundation::IAsyncOperation<ToasterSetDarknessLevelResult^>^ SetDarknessLevelAsync(Windows::Devices::AllJoyn::AllJoynMessageInfo^ info, byte value);
 
 };
 
-} } } 
+} } } } 

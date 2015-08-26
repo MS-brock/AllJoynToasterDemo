@@ -5,50 +5,49 @@
 //   Changes to this file may cause incorrect behavior and will be lost if  
 //   the code is regenerated.
 //
-//   Tool: AllJoynCodeGen.exe
-//   Version: 1.0.0
+//   Tool: AllJoynCodeGenerator.exe
 //
 //   This tool is located in the Windows 10 SDK and the Windows 10 AllJoyn 
-//   Visual Studio Extension in the Visual Studio Extension Gallery.  
+//   Visual Studio Extension in the Visual Studio Gallery.  
 //
 //   The generated code should be packaged in a Windows 10 C++/CX Runtime  
-//   Component which can be consumed in any UAP-supported language using 
+//   Component which can be consumed in any UWP-supported language using 
 //   APIs that are available in Windows.Devices.AllJoyn.
 //
-//   Using AllJoynCodeGen - Invoke the following command with a valid 
-//   Introspection XML file:
-//     AllJoynCodeGen -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
+//   Using AllJoynCodeGenerator - Invoke the following command with a valid 
+//   Introspection XML file and a writable output directory:
+//     AllJoynCodeGenerator -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
 // </auto-generated>
 //-----------------------------------------------------------------------------
 #pragma once
 
-namespace com { namespace microsoft { namespace sample {
+namespace org { namespace alljoyn { namespace example { namespace Toaster {
 
-ref class toasterSignals;
+ref class ToasterSignals;
 
-public interface class ItoasterSignals
+public interface class IToasterSignals
 {
-    event Windows::Foundation::TypedEventHandler<toasterSignals^, toasterToastDoneReceivedEventArgs^>^ ToastDoneReceived;
+    event Windows::Foundation::TypedEventHandler<ToasterSignals^, ToasterToastBurntReceivedEventArgs^>^ ToastBurntReceived;
 };
 
-public ref class toasterSignals sealed : [Windows::Foundation::Metadata::Default] ItoasterSignals
+public ref class ToasterSignals sealed : [Windows::Foundation::Metadata::Default] IToasterSignals
 {
 public:
-    // Calling this method will send the toastDone signal to every member of the session.
-    void ToastDone(_In_ int32 interface_status);
+    // Calling this method will send the ToastBurnt signal to every member of the session.
+    void ToastBurnt();
 
-    // This event fires whenever the toastDone signal is sent by another member of the session.
-    virtual event Windows::Foundation::TypedEventHandler<toasterSignals^, toasterToastDoneReceivedEventArgs^>^ ToastDoneReceived;
+    // This event fires whenever the ToastBurnt signal is sent by another member of the session.
+    virtual event Windows::Foundation::TypedEventHandler<ToasterSignals^, ToasterToastBurntReceivedEventArgs^>^ ToastBurntReceived;
 
 internal:
     void Initialize(_In_ alljoyn_busobject busObject, _In_ alljoyn_sessionid sessionId);
-    void CallToastDoneReceived(_In_ toasterSignals^ sender, _In_ toasterToastDoneReceivedEventArgs^ args);
+    void CallToastBurntReceived(_In_ ToasterSignals^ sender, _In_ ToasterToastBurntReceivedEventArgs^ args);
 
 private:
     alljoyn_busobject m_busObject;
     alljoyn_sessionid m_sessionId;
 
-    alljoyn_interfacedescription_member m_memberToastDone;
+    alljoyn_interfacedescription_member m_memberToastBurnt;
 };
 
-} } } 
+} } } } 

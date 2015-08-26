@@ -5,19 +5,18 @@
 //   Changes to this file may cause incorrect behavior and will be lost if  
 //   the code is regenerated.
 //
-//   Tool: AllJoynCodeGen.exe
-//   Version: 1.0.0
+//   Tool: AllJoynCodeGenerator.exe
 //
 //   This tool is located in the Windows 10 SDK and the Windows 10 AllJoyn 
-//   Visual Studio Extension in the Visual Studio Extension Gallery.  
+//   Visual Studio Extension in the Visual Studio Gallery.  
 //
 //   The generated code should be packaged in a Windows 10 C++/CX Runtime  
-//   Component which can be consumed in any UAP-supported language using 
+//   Component which can be consumed in any UWP-supported language using 
 //   APIs that are available in Windows.Devices.AllJoyn.
 //
-//   Using AllJoynCodeGen - Invoke the following command with a valid 
-//   Introspection XML file:
-//     AllJoynCodeGen -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
+//   Using AllJoynCodeGenerator - Invoke the following command with a valid 
+//   Introspection XML file and a writable output directory:
+//     AllJoynCodeGenerator -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
 // </auto-generated>
 //-----------------------------------------------------------------------------
 #include "pch.h"
@@ -27,9 +26,9 @@ using namespace Microsoft::WRL;
 using namespace Platform;
 using namespace Windows::Foundation;
 using namespace Windows::Devices::AllJoyn;
-using namespace com::microsoft::sample;
+using namespace org::alljoyn::example::Toaster;
 
-toasterWatcher::toasterWatcher(AllJoynBusAttachment^ busAttachment) :
+ToasterWatcher::ToasterWatcher(AllJoynBusAttachment^ busAttachment) :
     m_aboutListener(nullptr)
 {
     m_busAttachment = busAttachment;
@@ -37,16 +36,16 @@ toasterWatcher::toasterWatcher(AllJoynBusAttachment^ busAttachment) :
     m_busAttachmentStateChangedToken.Value = 0;
 }
 
-toasterWatcher::~toasterWatcher()
+ToasterWatcher::~ToasterWatcher()
 {
     UnregisterFromBus();
 }
 
-void toasterWatcher::UnregisterFromBus()
+void ToasterWatcher::UnregisterFromBus()
 {
     if (nullptr != m_aboutListener)
     {
-        PCSTR interfaces[] = { "com.microsoft.sample.toaster" };
+        PCSTR interfaces[] = { "org.alljoyn.example.Toaster" };
         alljoyn_busattachment_cancelwhoimplements_interfaces(
             AllJoynHelpers::GetInternalBusAttachment(m_busAttachment),
             interfaces,
@@ -62,7 +61,7 @@ void toasterWatcher::UnregisterFromBus()
     }
 }
 
-void toasterWatcher::OnAnnounce(
+void ToasterWatcher::OnAnnounce(
     _In_ PCSTR name,
     _In_ uint16_t version,
     _In_ alljoyn_sessionport port,
@@ -74,29 +73,29 @@ void toasterWatcher::OnAnnounce(
 
     alljoyn_aboutobjectdescription objectDescription = alljoyn_aboutobjectdescription_create_full(objectDescriptionArg);
 
-    if (alljoyn_aboutobjectdescription_hasinterface(objectDescription, "com.microsoft.sample.toaster"))
+    if (alljoyn_aboutobjectdescription_hasinterface(objectDescription, "org.alljoyn.example.Toaster"))
     {
         AllJoynServiceInfo^ args = ref new AllJoynServiceInfo(
             AllJoynHelpers::MultibyteToPlatformString(name),
-            AllJoynHelpers::GetObjectPath(objectDescription, "com.microsoft.sample.toaster"),
+            AllJoynHelpers::GetObjectPath(objectDescription, "org.alljoyn.example.Toaster"),
             port);
         Added(this, args);
     }
     alljoyn_aboutobjectdescription_destroy(objectDescription);
 }
 
-void toasterWatcher::BusAttachmentStateChanged(_In_ AllJoynBusAttachment^ sender, _In_ AllJoynBusAttachmentStateChangedEventArgs^ args)
+void ToasterWatcher::BusAttachmentStateChanged(_In_ AllJoynBusAttachment^ sender, _In_ AllJoynBusAttachmentStateChangedEventArgs^ args)
 {
     if (args->State == AllJoynBusAttachmentState::Connected)
     {
         alljoyn_aboutlistener_callback callbacks = 
         {
-            AllJoynHelpers::AnnounceHandler<toasterWatcher>
+            AllJoynHelpers::AnnounceHandler<ToasterWatcher>
         };
         m_aboutListener = alljoyn_aboutlistener_create(&callbacks, m_weak);
 
         alljoyn_busattachment_registeraboutlistener(AllJoynHelpers::GetInternalBusAttachment(sender), m_aboutListener);
-        PCSTR interfaces[] = { "com.microsoft.sample.toaster" };
+        PCSTR interfaces[] = { "org.alljoyn.example.Toaster" };
         
         auto status = alljoyn_busattachment_whoimplements_interfaces(
             AllJoynHelpers::GetInternalBusAttachment(sender), 
@@ -113,7 +112,7 @@ void toasterWatcher::BusAttachmentStateChanged(_In_ AllJoynBusAttachment^ sender
     }
 }
 
-void toasterWatcher::Start()
+void ToasterWatcher::Start()
 {
     if (nullptr == m_busAttachment)
     {
@@ -121,23 +120,23 @@ void toasterWatcher::Start()
         return;
     }
 
-    int32 result = AllJoynHelpers::CreateInterfaces(m_busAttachment, c_toasterIntrospectionXml);
+    int32 result = AllJoynHelpers::CreateInterfaces(m_busAttachment, c_ToasterIntrospectionXml);
     if (result != AllJoynStatus::Ok)
     {
         StopInternal(result);
         return;
     }
 
-    m_busAttachmentStateChangedToken = m_busAttachment->StateChanged += ref new TypedEventHandler<AllJoynBusAttachment^, AllJoynBusAttachmentStateChangedEventArgs^>(this, &toasterWatcher::BusAttachmentStateChanged);
+    m_busAttachmentStateChangedToken = m_busAttachment->StateChanged += ref new TypedEventHandler<AllJoynBusAttachment^, AllJoynBusAttachmentStateChangedEventArgs^>(this, &ToasterWatcher::BusAttachmentStateChanged);
     m_busAttachment->Connect();
 }
 
-void toasterWatcher::Stop()
+void ToasterWatcher::Stop()
 {
     StopInternal(AllJoynStatus::Ok);
 }
 
-void toasterWatcher::StopInternal(int32 status)
+void ToasterWatcher::StopInternal(int32 status)
 {
     UnregisterFromBus();
     Stopped(this, ref new AllJoynProducerStoppedEventArgs(status));

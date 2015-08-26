@@ -5,49 +5,48 @@
 //   Changes to this file may cause incorrect behavior and will be lost if  
 //   the code is regenerated.
 //
-//   Tool: AllJoynCodeGen.exe
-//   Version: 1.0.0
+//   Tool: AllJoynCodeGenerator.exe
 //
 //   This tool is located in the Windows 10 SDK and the Windows 10 AllJoyn 
-//   Visual Studio Extension in the Visual Studio Extension Gallery.  
+//   Visual Studio Extension in the Visual Studio Gallery.  
 //
 //   The generated code should be packaged in a Windows 10 C++/CX Runtime  
-//   Component which can be consumed in any UAP-supported language using 
+//   Component which can be consumed in any UWP-supported language using 
 //   APIs that are available in Windows.Devices.AllJoyn.
 //
-//   Using AllJoynCodeGen - Invoke the following command with a valid 
-//   Introspection XML file:
-//     AllJoynCodeGen -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
+//   Using AllJoynCodeGenerator - Invoke the following command with a valid 
+//   Introspection XML file and a writable output directory:
+//     AllJoynCodeGenerator -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
 // </auto-generated>
 //-----------------------------------------------------------------------------
 #pragma once
 
-namespace com { namespace microsoft { namespace sample {
+namespace org { namespace alljoyn { namespace example { namespace Toaster {
 
 // Methods
-public ref class toasterStartToastingCalledEventArgs sealed
+public ref class ToasterStartToastingCalledEventArgs sealed
 {
 public:
-    toasterStartToastingCalledEventArgs(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
+    ToasterStartToastingCalledEventArgs(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
 
     property Windows::Devices::AllJoyn::AllJoynMessageInfo^ MessageInfo
     {
         Windows::Devices::AllJoyn::AllJoynMessageInfo^ get() { return m_messageInfo; }
     }
 
-    property toasterStartToastingResult^ Result
+    property ToasterStartToastingResult^ Result
     {
-        toasterStartToastingResult^ get() { return m_result; }
-        void set(_In_ toasterStartToastingResult^ value) { m_result = value; }
+        ToasterStartToastingResult^ get() { return m_result; }
+        void set(_In_ ToasterStartToastingResult^ value) { m_result = value; }
     }
 
     Windows::Foundation::Deferral^ GetDeferral();
 
-    static Windows::Foundation::IAsyncOperation<toasterStartToastingResult^>^ GetResultAsync(toasterStartToastingCalledEventArgs^ args)
+    static Windows::Foundation::IAsyncOperation<ToasterStartToastingResult^>^ GetResultAsync(ToasterStartToastingCalledEventArgs^ args)
     {
         args->InvokeAllFinished();
         auto t = concurrency::create_task(args->m_tce);
-        return concurrency::create_async([t]() -> concurrency::task<toasterStartToastingResult^>
+        return concurrency::create_async([t]() -> concurrency::task<ToasterStartToastingResult^>
         {
             return t;
         });
@@ -60,35 +59,35 @@ private:
 
     bool m_raised;
     int m_completionsRequired;
-    concurrency::task_completion_event<toasterStartToastingResult^> m_tce;
+    concurrency::task_completion_event<ToasterStartToastingResult^> m_tce;
     std::mutex m_lock;
     Windows::Devices::AllJoyn::AllJoynMessageInfo^ m_messageInfo;
-    toasterStartToastingResult^ m_result;
+    ToasterStartToastingResult^ m_result;
 };
 
-public ref class toasterStopToastingCalledEventArgs sealed
+public ref class ToasterStopToastingCalledEventArgs sealed
 {
 public:
-    toasterStopToastingCalledEventArgs(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
+    ToasterStopToastingCalledEventArgs(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
 
     property Windows::Devices::AllJoyn::AllJoynMessageInfo^ MessageInfo
     {
         Windows::Devices::AllJoyn::AllJoynMessageInfo^ get() { return m_messageInfo; }
     }
 
-    property toasterStopToastingResult^ Result
+    property ToasterStopToastingResult^ Result
     {
-        toasterStopToastingResult^ get() { return m_result; }
-        void set(_In_ toasterStopToastingResult^ value) { m_result = value; }
+        ToasterStopToastingResult^ get() { return m_result; }
+        void set(_In_ ToasterStopToastingResult^ value) { m_result = value; }
     }
 
     Windows::Foundation::Deferral^ GetDeferral();
 
-    static Windows::Foundation::IAsyncOperation<toasterStopToastingResult^>^ GetResultAsync(toasterStopToastingCalledEventArgs^ args)
+    static Windows::Foundation::IAsyncOperation<ToasterStopToastingResult^>^ GetResultAsync(ToasterStopToastingCalledEventArgs^ args)
     {
         args->InvokeAllFinished();
         auto t = concurrency::create_task(args->m_tce);
-        return concurrency::create_async([t]() -> concurrency::task<toasterStopToastingResult^>
+        return concurrency::create_async([t]() -> concurrency::task<ToasterStopToastingResult^>
         {
             return t;
         });
@@ -101,36 +100,36 @@ private:
 
     bool m_raised;
     int m_completionsRequired;
-    concurrency::task_completion_event<toasterStopToastingResult^> m_tce;
+    concurrency::task_completion_event<ToasterStopToastingResult^> m_tce;
     std::mutex m_lock;
     Windows::Devices::AllJoyn::AllJoynMessageInfo^ m_messageInfo;
-    toasterStopToastingResult^ m_result;
+    ToasterStopToastingResult^ m_result;
 };
 
 // Readable Properties
-public ref class toasterGetDarknessRequestedEventArgs sealed
+public ref class ToasterGetVersionRequestedEventArgs sealed
 {
 public:
-    toasterGetDarknessRequestedEventArgs(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
+    ToasterGetVersionRequestedEventArgs(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
 
     property Windows::Devices::AllJoyn::AllJoynMessageInfo^ MessageInfo
     {
         Windows::Devices::AllJoyn::AllJoynMessageInfo^ get() { return m_messageInfo; }
     }
 
-    property toasterGetDarknessResult^ Result
+    property ToasterGetVersionResult^ Result
     {
-        toasterGetDarknessResult^ get() { return m_result; }
-        void set(_In_ toasterGetDarknessResult^ value) { m_result = value; }
+        ToasterGetVersionResult^ get() { return m_result; }
+        void set(_In_ ToasterGetVersionResult^ value) { m_result = value; }
     }
 
     Windows::Foundation::Deferral^ GetDeferral();
 
-    static Windows::Foundation::IAsyncOperation<toasterGetDarknessResult^>^ GetResultAsync(toasterGetDarknessRequestedEventArgs^ args)
+    static Windows::Foundation::IAsyncOperation<ToasterGetVersionResult^>^ GetResultAsync(ToasterGetVersionRequestedEventArgs^ args)
     {
         args->InvokeAllFinished();
         auto t = concurrency::create_task(args->m_tce);
-        return concurrency::create_async([t]() -> concurrency::task<toasterGetDarknessResult^>
+        return concurrency::create_async([t]() -> concurrency::task<ToasterGetVersionResult^>
         {
             return t;
         });
@@ -143,39 +142,80 @@ private:
 
     bool m_raised;
     int m_completionsRequired;
-    concurrency::task_completion_event<toasterGetDarknessResult^> m_tce;
+    concurrency::task_completion_event<ToasterGetVersionResult^> m_tce;
     std::mutex m_lock;
     Windows::Devices::AllJoyn::AllJoynMessageInfo^ m_messageInfo;
-    toasterGetDarknessResult^ m_result;
+    ToasterGetVersionResult^ m_result;
+};
+
+public ref class ToasterGetDarknessLevelRequestedEventArgs sealed
+{
+public:
+    ToasterGetDarknessLevelRequestedEventArgs(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info);
+
+    property Windows::Devices::AllJoyn::AllJoynMessageInfo^ MessageInfo
+    {
+        Windows::Devices::AllJoyn::AllJoynMessageInfo^ get() { return m_messageInfo; }
+    }
+
+    property ToasterGetDarknessLevelResult^ Result
+    {
+        ToasterGetDarknessLevelResult^ get() { return m_result; }
+        void set(_In_ ToasterGetDarknessLevelResult^ value) { m_result = value; }
+    }
+
+    Windows::Foundation::Deferral^ GetDeferral();
+
+    static Windows::Foundation::IAsyncOperation<ToasterGetDarknessLevelResult^>^ GetResultAsync(ToasterGetDarknessLevelRequestedEventArgs^ args)
+    {
+        args->InvokeAllFinished();
+        auto t = concurrency::create_task(args->m_tce);
+        return concurrency::create_async([t]() -> concurrency::task<ToasterGetDarknessLevelResult^>
+        {
+            return t;
+        });
+    }
+
+private:
+    void Complete();
+    void InvokeAllFinished();
+    void InvokeCompleteHandler();
+
+    bool m_raised;
+    int m_completionsRequired;
+    concurrency::task_completion_event<ToasterGetDarknessLevelResult^> m_tce;
+    std::mutex m_lock;
+    Windows::Devices::AllJoyn::AllJoynMessageInfo^ m_messageInfo;
+    ToasterGetDarknessLevelResult^ m_result;
 };
 
 // Writable Properties
-public ref class toasterSetDarknessRequestedEventArgs sealed
+public ref class ToasterSetDarknessLevelRequestedEventArgs sealed
 {
 public:
-    toasterSetDarknessRequestedEventArgs(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info, _In_ uint32 value);
+    ToasterSetDarknessLevelRequestedEventArgs(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ info, _In_ byte value);
 
     property Windows::Devices::AllJoyn::AllJoynMessageInfo^ MessageInfo
     {
         Windows::Devices::AllJoyn::AllJoynMessageInfo^ get() { return m_messageInfo; }
     }
 
-    property uint32 Value
+    property byte Value
     {
-        uint32 get() { return m_value; }
+        byte get() { return m_value; }
     }
 
-    property int ResultStatus
+    property ToasterSetDarknessLevelResult^ Result
     {
-        int get() { return m_resultStatus; }
-        void set(_In_ int value) { m_resultStatus = value; }
+        ToasterSetDarknessLevelResult^ get() { return m_result; }
+        void set(_In_ ToasterSetDarknessLevelResult^ value) { m_result = value; }
     }
 
-    static Windows::Foundation::IAsyncOperation<int>^ GetResultAsync(toasterSetDarknessRequestedEventArgs^ args)
+    static Windows::Foundation::IAsyncOperation<ToasterSetDarknessLevelResult^>^ GetResultAsync(ToasterSetDarknessLevelRequestedEventArgs^ args)
     {
         args->InvokeAllFinished();
         auto t = concurrency::create_task(args->m_tce);
-        return concurrency::create_async([t]() -> concurrency::task<int>
+        return concurrency::create_async([t]() -> concurrency::task<ToasterSetDarknessLevelResult^>
         {
             return t;
         });
@@ -190,11 +230,11 @@ private:
 
     bool m_raised;
     int m_completionsRequired;
-    concurrency::task_completion_event<int> m_tce;
+    concurrency::task_completion_event<ToasterSetDarknessLevelResult^> m_tce;
     std::mutex m_lock;
     Windows::Devices::AllJoyn::AllJoynMessageInfo^ m_messageInfo;
-    uint32 m_value;
-    int m_resultStatus;
+    byte m_value;
+    ToasterSetDarknessLevelResult^ m_result;
 };
 
-} } } 
+} } } } 

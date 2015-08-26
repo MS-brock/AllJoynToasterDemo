@@ -5,19 +5,18 @@
 //   Changes to this file may cause incorrect behavior and will be lost if  
 //   the code is regenerated.
 //
-//   Tool: AllJoynCodeGen.exe
-//   Version: 1.0.0
+//   Tool: AllJoynCodeGenerator.exe
 //
 //   This tool is located in the Windows 10 SDK and the Windows 10 AllJoyn 
-//   Visual Studio Extension in the Visual Studio Extension Gallery.  
+//   Visual Studio Extension in the Visual Studio Gallery.  
 //
 //   The generated code should be packaged in a Windows 10 C++/CX Runtime  
-//   Component which can be consumed in any UAP-supported language using 
+//   Component which can be consumed in any UWP-supported language using 
 //   APIs that are available in Windows.Devices.AllJoyn.
 //
-//   Using AllJoynCodeGen - Invoke the following command with a valid 
-//   Introspection XML file:
-//     AllJoynCodeGen -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
+//   Using AllJoynCodeGenerator - Invoke the following command with a valid 
+//   Introspection XML file and a writable output directory:
+//     AllJoynCodeGenerator -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
 // </auto-generated>
 //-----------------------------------------------------------------------------
 #include "pch.h"
@@ -27,11 +26,11 @@ using namespace Microsoft::WRL;
 using namespace Platform;
 using namespace Windows::Foundation;
 using namespace Windows::Devices::AllJoyn;
-using namespace com::microsoft::sample;
+using namespace org::alljoyn::example::Toaster;
 
-std::map<alljoyn_interfacedescription, WeakReference*> toasterConsumer::SourceInterfaces;
+std::map<alljoyn_interfacedescription, WeakReference*> ToasterConsumer::SourceInterfaces;
 
-toasterConsumer::toasterConsumer(AllJoynBusAttachment^ busAttachment)
+ToasterConsumer::ToasterConsumer(AllJoynBusAttachment^ busAttachment)
     : m_busAttachment(busAttachment),
     m_proxyBusObject(nullptr),
     m_busObject(nullptr),
@@ -39,28 +38,26 @@ toasterConsumer::toasterConsumer(AllJoynBusAttachment^ busAttachment)
     m_sessionId(0)
 {
     m_weak = new WeakReference(this);
-    m_signals = ref new toasterSignals();
+    m_signals = ref new ToasterSignals();
+    m_nativeBusAttachment = AllJoynHelpers::GetInternalBusAttachment(m_busAttachment);
 }
 
-toasterConsumer::~toasterConsumer()
+ToasterConsumer::~ToasterConsumer()
 {
+    AllJoynBusObjectManager::ReleaseBusObject(m_nativeBusAttachment, AllJoynHelpers::PlatformToMultibyteString(ServiceObjectPath).data());
     if (SessionListener != nullptr)
     {
-        alljoyn_busattachment_leavesession(AllJoynHelpers::GetInternalBusAttachment(m_busAttachment), m_sessionId);
+        alljoyn_busattachment_setsessionlistener(m_nativeBusAttachment, m_sessionId, nullptr);
         alljoyn_sessionlistener_destroy(SessionListener);
     }
     if (nullptr != ProxyBusObject)
     {
         alljoyn_proxybusobject_destroy(ProxyBusObject);
     }
-    if (nullptr != BusObject)
-    {
-        alljoyn_busobject_destroy(BusObject);
-    }
     delete m_weak;
 }
 
-void toasterConsumer::OnSessionLost(_In_ alljoyn_sessionid sessionId, _In_ alljoyn_sessionlostreason reason)
+void ToasterConsumer::OnSessionLost(_In_ alljoyn_sessionid sessionId, _In_ alljoyn_sessionlostreason reason)
 {
     if (sessionId == m_sessionId)
     {
@@ -69,7 +66,7 @@ void toasterConsumer::OnSessionLost(_In_ alljoyn_sessionid sessionId, _In_ alljo
     }
 }
 
-void toasterConsumer::OnSessionMemberAdded(_In_ alljoyn_sessionid sessionId, _In_ PCSTR uniqueName)
+void ToasterConsumer::OnSessionMemberAdded(_In_ alljoyn_sessionid sessionId, _In_ PCSTR uniqueName)
 {
     if (sessionId == m_sessionId)
     {
@@ -78,7 +75,7 @@ void toasterConsumer::OnSessionMemberAdded(_In_ alljoyn_sessionid sessionId, _In
     }
 }
 
-void toasterConsumer::OnSessionMemberRemoved(_In_ alljoyn_sessionid sessionId, _In_ PCSTR uniqueName)
+void ToasterConsumer::OnSessionMemberRemoved(_In_ alljoyn_sessionid sessionId, _In_ PCSTR uniqueName)
 {
     if (sessionId == m_sessionId)
     {
@@ -87,7 +84,7 @@ void toasterConsumer::OnSessionMemberRemoved(_In_ alljoyn_sessionid sessionId, _
     }
 }
 
-QStatus toasterConsumer::AddSignalHandler(_In_ alljoyn_busattachment busAttachment, _In_ alljoyn_interfacedescription interfaceDescription, _In_ PCSTR methodName, _In_ alljoyn_messagereceiver_signalhandler_ptr handler)
+QStatus ToasterConsumer::AddSignalHandler(_In_ alljoyn_busattachment busAttachment, _In_ alljoyn_interfacedescription interfaceDescription, _In_ PCSTR methodName, _In_ alljoyn_messagereceiver_signalhandler_ptr handler)
 {
     alljoyn_interfacedescription_member member;
     if (!alljoyn_interfacedescription_getmember(interfaceDescription, methodName, &member))
@@ -98,37 +95,37 @@ QStatus toasterConsumer::AddSignalHandler(_In_ alljoyn_busattachment busAttachme
     return alljoyn_busattachment_registersignalhandler(busAttachment, handler, member, NULL);
 }
 
-IAsyncOperation<toasterJoinSessionResult^>^ toasterConsumer::JoinSessionAsync(
-    _In_ AllJoynServiceInfo^ serviceInfo, _Inout_ toasterWatcher^ watcher)
+IAsyncOperation<ToasterJoinSessionResult^>^ ToasterConsumer::JoinSessionAsync(
+    _In_ AllJoynServiceInfo^ serviceInfo, _Inout_ ToasterWatcher^ watcher)
 {
-    return create_async([serviceInfo, watcher]() -> toasterJoinSessionResult^
+    return create_async([serviceInfo, watcher]() -> ToasterJoinSessionResult^
     {
-        auto result = ref new toasterJoinSessionResult();
+        auto result = ref new ToasterJoinSessionResult();
         result->Status = AllJoynStatus::Ok;
         result->Consumer = nullptr;
 
-        result->Consumer = ref new toasterConsumer(watcher->BusAttachment);
+        result->Consumer = ref new ToasterConsumer(watcher->BusAttachment);
         result->Status = result->Consumer->JoinSession(serviceInfo);
 
         return result;
     });
 }
 
-IAsyncOperation<toasterStartToastingResult^>^ toasterConsumer::StartToastingAsync()
+IAsyncOperation<ToasterStartToastingResult^>^ ToasterConsumer::StartToastingAsync()
 {
-    return create_async([this]() -> toasterStartToastingResult^
+    return create_async([this]() -> ToasterStartToastingResult^
     {
-        auto result = ref new toasterStartToastingResult();
+        auto result = ref new ToasterStartToastingResult();
         
-        alljoyn_message message = alljoyn_message_create(AllJoynHelpers::GetInternalBusAttachment(m_busAttachment));
+        alljoyn_message message = alljoyn_message_create(m_nativeBusAttachment);
         size_t argCount = 0;
         alljoyn_msgarg inputs = alljoyn_msgarg_array_create(argCount);
 
         
         QStatus status = alljoyn_proxybusobject_methodcall(
             ProxyBusObject,
-            "com.microsoft.sample.toaster",
-            "startToasting",
+            "org.alljoyn.example.Toaster",
+            "StartToasting",
             inputs,
             argCount,
             message,
@@ -142,21 +139,21 @@ IAsyncOperation<toasterStartToastingResult^>^ toasterConsumer::StartToastingAsyn
         return result;
     });
 }
-IAsyncOperation<toasterStopToastingResult^>^ toasterConsumer::StopToastingAsync()
+IAsyncOperation<ToasterStopToastingResult^>^ ToasterConsumer::StopToastingAsync()
 {
-    return create_async([this]() -> toasterStopToastingResult^
+    return create_async([this]() -> ToasterStopToastingResult^
     {
-        auto result = ref new toasterStopToastingResult();
+        auto result = ref new ToasterStopToastingResult();
         
-        alljoyn_message message = alljoyn_message_create(AllJoynHelpers::GetInternalBusAttachment(m_busAttachment));
+        alljoyn_message message = alljoyn_message_create(m_nativeBusAttachment);
         size_t argCount = 0;
         alljoyn_msgarg inputs = alljoyn_msgarg_array_create(argCount);
 
         
         QStatus status = alljoyn_proxybusobject_methodcall(
             ProxyBusObject,
-            "com.microsoft.sample.toaster",
-            "stopToasting",
+            "org.alljoyn.example.Toaster",
+            "StopToasting",
             inputs,
             argCount,
             message,
@@ -171,19 +168,56 @@ IAsyncOperation<toasterStopToastingResult^>^ toasterConsumer::StopToastingAsync(
     });
 }
 
-IAsyncOperation<int>^ toasterConsumer::SetDarknessAsync(_In_ uint32 value)
+IAsyncOperation<ToasterGetVersionResult^>^ ToasterConsumer::GetVersionAsync()
 {
-    return create_async([this, value]() -> int
+    return create_async([this]() -> ToasterGetVersionResult^
+    {
+        PropertyGetContext<uint16> getContext;
+        
+        alljoyn_proxybusobject_getpropertyasync(
+            ProxyBusObject,
+            "org.alljoyn.example.Toaster",
+            "Version",
+            [](QStatus status, alljoyn_proxybusobject obj, const alljoyn_msgarg value, void* context)
+            {
+                UNREFERENCED_PARAMETER(obj);
+                auto propertyContext = static_cast<PropertyGetContext<uint16>*>(context);
+
+                if (ER_OK == status)
+                {
+                    uint16 argument;
+                    TypeConversionHelpers::GetAllJoynMessageArg(value, "q", &argument);
+
+                    propertyContext->SetValue(argument);
+                }
+                propertyContext->SetStatus(status);
+                propertyContext->SetEvent();
+            },
+            c_MessageTimeoutInMilliseconds,
+            &getContext);
+
+        getContext.Wait();
+
+        auto result = ref new ToasterGetVersionResult();
+        result->Status = getContext.GetStatus();
+        result->Version = getContext.GetValue();
+        return result;
+    });
+}
+
+IAsyncOperation<ToasterSetDarknessLevelResult^>^ ToasterConsumer::SetDarknessLevelAsync(_In_ byte value)
+{
+    return create_async([this, value]() -> ToasterSetDarknessLevelResult^
     {
         PropertySetContext setContext;
 
         alljoyn_msgarg inputArgument = alljoyn_msgarg_create();
-        TypeConversionHelpers::SetAllJoynMessageArg(inputArgument, "u", value);
+        TypeConversionHelpers::SetAllJoynMessageArg(inputArgument, "y", value);
 
         alljoyn_proxybusobject_setpropertyasync(
             ProxyBusObject,
-            "com.microsoft.sample.toaster",
-            "Darkness",
+            "org.alljoyn.example.Toaster",
+            "DarknessLevel",
             inputArgument,
             [](QStatus status, alljoyn_proxybusobject obj, void* context)
             {
@@ -198,29 +232,32 @@ IAsyncOperation<int>^ toasterConsumer::SetDarknessAsync(_In_ uint32 value)
         alljoyn_msgarg_destroy(inputArgument);
 
         setContext.Wait();
-        return setContext.GetStatus();
+
+        auto result = ref new ToasterSetDarknessLevelResult();
+        result->Status = setContext.GetStatus();
+        return result;
     });
 }
 
-IAsyncOperation<toasterGetDarknessResult^>^ toasterConsumer::GetDarknessAsync()
+IAsyncOperation<ToasterGetDarknessLevelResult^>^ ToasterConsumer::GetDarknessLevelAsync()
 {
-    return create_async([this]()->toasterGetDarknessResult^
+    return create_async([this]() -> ToasterGetDarknessLevelResult^
     {
-        PropertyGetContext<uint32> getContext;
+        PropertyGetContext<byte> getContext;
         
         alljoyn_proxybusobject_getpropertyasync(
             ProxyBusObject,
-            "com.microsoft.sample.toaster",
-            "Darkness",
+            "org.alljoyn.example.Toaster",
+            "DarknessLevel",
             [](QStatus status, alljoyn_proxybusobject obj, const alljoyn_msgarg value, void* context)
             {
                 UNREFERENCED_PARAMETER(obj);
-                auto propertyContext = static_cast<PropertyGetContext<uint32>*>(context);
+                auto propertyContext = static_cast<PropertyGetContext<byte>*>(context);
 
                 if (ER_OK == status)
                 {
-                    uint32 argument;
-                    TypeConversionHelpers::GetAllJoynMessageArg(value, "u", &argument);
+                    byte argument;
+                    TypeConversionHelpers::GetAllJoynMessageArg(value, "y", &argument);
 
                     propertyContext->SetValue(argument);
                 }
@@ -232,22 +269,43 @@ IAsyncOperation<toasterGetDarknessResult^>^ toasterConsumer::GetDarknessAsync()
 
         getContext.Wait();
 
-        auto result = ref new toasterGetDarknessResult();
+        auto result = ref new ToasterGetDarknessLevelResult();
         result->Status = getContext.GetStatus();
-        result->Darkness = getContext.GetValue();
+        result->DarknessLevel = getContext.GetValue();
         return result;
     });
 }
 
-void toasterConsumer::OnPropertyChanged(_In_ alljoyn_proxybusobject obj, _In_ PCSTR interfaceName, _In_ const alljoyn_msgarg changed, _In_ const alljoyn_msgarg invalidated)
+void ToasterConsumer::OnPropertyChanged(_In_ alljoyn_proxybusobject obj, _In_ PCSTR interfaceName, _In_ const alljoyn_msgarg changed, _In_ const alljoyn_msgarg invalidated)
 {
     UNREFERENCED_PARAMETER(obj);
     UNREFERENCED_PARAMETER(interfaceName);
-    UNREFERENCED_PARAMETER(changed);
     UNREFERENCED_PARAMETER(invalidated);
+
+    alljoyn_msgarg changedProperties;
+    size_t changedPropertyCount;
+    if (ER_OK != alljoyn_msgarg_get(changed, "a{sv}", &changedPropertyCount, &changedProperties))
+    {
+        return;
+    }
+
+    for (size_t i = 0; i < changedPropertyCount; i++)
+    {
+        char* propertyName;
+        alljoyn_msgarg propertyValue;
+        if (ER_OK != alljoyn_msgarg_get(alljoyn_msgarg_array_element(changedProperties, i), "{sv}", &propertyName, &propertyValue))
+        {
+            return;
+        }
+
+        if (strcmp("DarknessLevel", propertyName) == 0)
+        {
+            DarknessLevelChanged(this, nullptr);
+        }
+    }
 }
 
-void toasterConsumer::CallToastDoneSignalHandler(_In_ const alljoyn_interfacedescription_member* member, _In_ alljoyn_message message)
+void ToasterConsumer::CallToastBurntSignalHandler(_In_ const alljoyn_interfacedescription_member* member, _In_ alljoyn_message message)
 {
     auto source = SourceInterfaces.find(member->iface);
     if (source == SourceInterfaces.end())
@@ -255,29 +313,25 @@ void toasterConsumer::CallToastDoneSignalHandler(_In_ const alljoyn_interfacedes
         return;
     }
 
-    auto consumer = source->second->Resolve<toasterConsumer>();
+    auto consumer = source->second->Resolve<ToasterConsumer>();
     if (consumer->Signals != nullptr)
     {
         auto callInfo = ref new AllJoynMessageInfo(AllJoynHelpers::MultibyteToPlatformString(alljoyn_message_getsender(message)));
-        auto eventArgs = ref new toasterToastDoneReceivedEventArgs();
+        auto eventArgs = ref new ToasterToastBurntReceivedEventArgs();
         eventArgs->MessageInfo = callInfo;
 
-        int32 argument0;
-        TypeConversionHelpers::GetAllJoynMessageArg(alljoyn_message_getarg(message, 0), "i", &argument0);
 
-        eventArgs->Status = argument0;
-
-        consumer->Signals->CallToastDoneReceived(consumer->Signals, eventArgs);
+        consumer->Signals->CallToastBurntReceived(consumer->Signals, eventArgs);
     }
 }
 
-int32 toasterConsumer::JoinSession(_In_ AllJoynServiceInfo^ serviceInfo)
+int32 ToasterConsumer::JoinSession(_In_ AllJoynServiceInfo^ serviceInfo)
 {
     alljoyn_sessionlistener_callbacks callbacks =
     {
-        AllJoynHelpers::SessionLostHandler<toasterConsumer>,
-        AllJoynHelpers::SessionMemberAddedHandler<toasterConsumer>,
-        AllJoynHelpers::SessionMemberRemovedHandler<toasterConsumer>
+        AllJoynHelpers::SessionLostHandler<ToasterConsumer>,
+        AllJoynHelpers::SessionMemberAddedHandler<ToasterConsumer>,
+        AllJoynHelpers::SessionMemberRemovedHandler<ToasterConsumer>
     };
 
     alljoyn_busattachment_enableconcurrentcallbacks(AllJoynHelpers::GetInternalBusAttachment(m_busAttachment));
@@ -287,7 +341,7 @@ int32 toasterConsumer::JoinSession(_In_ AllJoynServiceInfo^ serviceInfo)
 
     std::vector<char> sessionNameUtf8 = AllJoynHelpers::PlatformToMultibyteString(serviceInfo->UniqueName);
     RETURN_IF_QSTATUS_ERROR(alljoyn_busattachment_joinsession(
-        AllJoynHelpers::GetInternalBusAttachment(m_busAttachment),
+        m_nativeBusAttachment,
         &sessionNameUtf8[0],
         serviceInfo->SessionPort,
         SessionListener,
@@ -303,18 +357,47 @@ int32 toasterConsumer::JoinSession(_In_ AllJoynServiceInfo^ serviceInfo)
         return AllJoynStatus::Fail;
     }
 
-    ProxyBusObject = alljoyn_proxybusobject_create(AllJoynHelpers::GetInternalBusAttachment(m_busAttachment), &sessionNameUtf8[0], &objectPath[0], m_sessionId);
+    ProxyBusObject = alljoyn_proxybusobject_create(m_nativeBusAttachment, &sessionNameUtf8[0], &objectPath[0], m_sessionId);
     if (nullptr == ProxyBusObject)
     {
         return AllJoynStatus::Fail;
     }
 
+    PCSTR propertyNames[] = { "DarknessLevel" };
 
-    alljoyn_interfacedescription description = alljoyn_busattachment_getinterface(AllJoynHelpers::GetInternalBusAttachment(m_busAttachment), "com.microsoft.sample.toaster");
+    RETURN_IF_QSTATUS_ERROR(alljoyn_proxybusobject_registerpropertieschangedlistener(
+        ProxyBusObject,
+        "org.alljoyn.example.Toaster",
+        propertyNames,
+        _countof(propertyNames),
+        AllJoynHelpers::PropertyChangedHandler<ToasterConsumer>, 
+        m_weak));
+
+
+    alljoyn_interfacedescription description = alljoyn_busattachment_getinterface(m_nativeBusAttachment, "org.alljoyn.example.Toaster");
     if (nullptr == description)
     {
         return AllJoynStatus::Fail;
     }
+
+    RETURN_IF_QSTATUS_ERROR(AllJoynBusObjectManager::GetBusObject(m_nativeBusAttachment, AllJoynHelpers::PlatformToMultibyteString(ServiceObjectPath).data(), &m_busObject));
+   
+    if (!AllJoynBusObjectManager::BusObjectIsRegistered(m_nativeBusAttachment, m_busObject))
+    {
+        RETURN_IF_QSTATUS_ERROR(alljoyn_busobject_addinterface(BusObject, description));
+    }
+
+    QStatus result = AddSignalHandler(
+        m_nativeBusAttachment,
+        description,
+        "ToastBurnt",
+        [](const alljoyn_interfacedescription_member* member, PCSTR srcPath, alljoyn_message message) { UNREFERENCED_PARAMETER(srcPath); CallToastBurntSignalHandler(member, message); });
+    if (result != ER_OK)
+    {
+        return static_cast<int32>(result);
+    }
+
+    SourceInterfaces[description] = m_weak;
 
     unsigned int noneMechanismIndex = 0;
     bool authenticationMechanismsContainsNone = m_busAttachment->AuthenticationMechanisms->IndexOf(AllJoynAuthenticationMechanism::None, &noneMechanismIndex);
@@ -328,7 +411,12 @@ int32 toasterConsumer::JoinSession(_In_ AllJoynServiceInfo^ serviceInfo)
         // is specified, or if None is not present in AuthenticationMechanisms.
         if (!authenticationMechanismsContainsNone || interfaceIsSecure)
         {
-            alljoyn_proxybusobject_secureconnection(ProxyBusObject, QCC_FALSE);
+            RETURN_IF_QSTATUS_ERROR(alljoyn_proxybusobject_secureconnection(ProxyBusObject, QCC_FALSE));
+            RETURN_IF_QSTATUS_ERROR(AllJoynBusObjectManager::TryRegisterBusObject(m_nativeBusAttachment, BusObject, true));
+        }
+        else
+        {
+            RETURN_IF_QSTATUS_ERROR(AllJoynBusObjectManager::TryRegisterBusObject(m_nativeBusAttachment, BusObject, false));
         }
     }
     else
@@ -339,24 +427,14 @@ int32 toasterConsumer::JoinSession(_In_ AllJoynServiceInfo^ serviceInfo)
         {
             return static_cast<int32>(ER_BUS_NO_AUTHENTICATION_MECHANISM);
         }
+        else
+        {
+            RETURN_IF_QSTATUS_ERROR(AllJoynBusObjectManager::TryRegisterBusObject(m_nativeBusAttachment, BusObject, false));
+        }
     }
 
-    RETURN_IF_QSTATUS_ERROR(AllJoynHelpers::CreateBusObject<toasterConsumer>(m_weak));
     RETURN_IF_QSTATUS_ERROR(alljoyn_proxybusobject_addinterface(ProxyBusObject, description));
-    RETURN_IF_QSTATUS_ERROR(alljoyn_busobject_addinterface(BusObject, description));
-
-    QStatus result = AddSignalHandler(
-        AllJoynHelpers::GetInternalBusAttachment(m_busAttachment),
-        description,
-        "toastDone",
-        [](const alljoyn_interfacedescription_member* member, PCSTR srcPath, alljoyn_message message) { UNREFERENCED_PARAMETER(srcPath); CallToastDoneSignalHandler(member, message); });
-    if (result != ER_OK)
-    {
-        return static_cast<int32>(result);
-    }
-
-    SourceInterfaces[description] = m_weak;
-    RETURN_IF_QSTATUS_ERROR(alljoyn_busattachment_registerbusobject(AllJoynHelpers::GetInternalBusAttachment(m_busAttachment), BusObject));
+    
     m_signals->Initialize(BusObject, m_sessionId);
 
     return AllJoynStatus::Ok;

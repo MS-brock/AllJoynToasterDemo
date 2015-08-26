@@ -5,19 +5,18 @@
 //   Changes to this file may cause incorrect behavior and will be lost if  
 //   the code is regenerated.
 //
-//   Tool: AllJoynCodeGen.exe
-//   Version: 1.0.0
+//   Tool: AllJoynCodeGenerator.exe
 //
 //   This tool is located in the Windows 10 SDK and the Windows 10 AllJoyn 
-//   Visual Studio Extension in the Visual Studio Extension Gallery.  
+//   Visual Studio Extension in the Visual Studio Gallery.  
 //
 //   The generated code should be packaged in a Windows 10 C++/CX Runtime  
-//   Component which can be consumed in any UAP-supported language using 
+//   Component which can be consumed in any UWP-supported language using 
 //   APIs that are available in Windows.Devices.AllJoyn.
 //
-//   Using AllJoynCodeGen - Invoke the following command with a valid 
-//   Introspection XML file:
-//     AllJoynCodeGen -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
+//   Using AllJoynCodeGenerator - Invoke the following command with a valid 
+//   Introspection XML file and a writable output directory:
+//     AllJoynCodeGenerator -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
 // </auto-generated>
 //-----------------------------------------------------------------------------
 #pragma once
@@ -67,7 +66,7 @@ public:
     // Callback for alljoyn_about_announced_ptr.
     // This callback expects the context to be of type T, which must implement the OnAnnounce function.
     template<class T>
-    static void AnnounceHandler(
+    static void AJ_CALL AnnounceHandler(
         _In_ const void* context,
         _In_ PCSTR name,
         _In_ uint16_t version,
@@ -82,7 +81,7 @@ public:
     // Callback for alljoyn_proxybusobject_listener_propertieschanged_ptr.
     // This callback expects the context to be of type T, which must implement the OnPropertyChanged function.
     template<class T>
-    static void PropertyChangedHandler(_In_ alljoyn_proxybusobject obj, _In_ PCSTR interfaceName, _In_ const alljoyn_msgarg changed, _In_ const alljoyn_msgarg invalidated, _In_ void* context)
+    static void AJ_CALL PropertyChangedHandler(_In_ alljoyn_proxybusobject obj, _In_ PCSTR interfaceName, _In_ const alljoyn_msgarg changed, _In_ const alljoyn_msgarg invalidated, _In_ void* context)
     {
         T^ caller = static_cast<const Platform::WeakReference*>(context)->Resolve<T>();
         caller->OnPropertyChanged(obj, interfaceName, changed, invalidated);
@@ -90,7 +89,7 @@ public:
 
     // Callback for alljoyn_busobject_prop_get_ptr.
     template<class T>
-    static QStatus PropertyGetHandler(_In_ const void* context, _In_ PCSTR interfaceName, _In_ PCSTR propertyName, _In_ alljoyn_msgarg value)
+    static QStatus AJ_CALL PropertyGetHandler(_In_ const void* context, _In_ PCSTR interfaceName, _In_ PCSTR propertyName, _In_ alljoyn_msgarg value)
     {
         T^ caller = static_cast<const Platform::WeakReference*>(context)->Resolve<T>();
         return caller->OnPropertyGet(interfaceName, propertyName, value);
@@ -98,7 +97,7 @@ public:
 
     // Callback for alljoyn_busobject_prop_set_ptr.
     template<class T>
-    static QStatus PropertySetHandler(_In_ const void* context, _In_ PCSTR interfaceName, _In_ PCSTR propertyName, _In_ alljoyn_msgarg value)
+    static QStatus AJ_CALL PropertySetHandler(_In_ const void* context, _In_ PCSTR interfaceName, _In_ PCSTR propertyName, _In_ alljoyn_msgarg value)
     {
         T^ caller = static_cast<const Platform::WeakReference*>(context)->Resolve<T>();
         return caller->OnPropertySet(interfaceName, propertyName, value);
@@ -106,7 +105,7 @@ public:
 
     // Callback for alljoyn_sessionlistener_sessionlost_ptr.
     template<class T>
-    static void SessionLostHandler(_In_ const void* context, _In_ alljoyn_sessionid sessionId, _In_ alljoyn_sessionlostreason reason)
+    static void AJ_CALL SessionLostHandler(_In_ const void* context, _In_ alljoyn_sessionid sessionId, _In_ alljoyn_sessionlostreason reason)
     {
         T^ caller = static_cast<const Platform::WeakReference*>(context)->Resolve<T>();
         caller->OnSessionLost(sessionId, reason);
@@ -114,7 +113,7 @@ public:
 
     // Callback for alljoyn_sessionlistener_sessionmemberadded_ptr.
     template<class T>
-    static void SessionMemberAddedHandler(_In_ const void* context, _In_ alljoyn_sessionid sessionId, _In_ PCSTR uniqueName)
+    static void AJ_CALL SessionMemberAddedHandler(_In_ const void* context, _In_ alljoyn_sessionid sessionId, _In_ PCSTR uniqueName)
     {
         T^ caller = static_cast<const Platform::WeakReference*>(context)->Resolve<T>();
         caller->OnSessionMemberAdded(sessionId, uniqueName);
@@ -122,7 +121,7 @@ public:
 
     // Callback for alljoyn_sessionlistener_sessionmemberremoved_ptr.
     template<class T>
-    static void SessionMemberRemovedHandler(_In_ const void* context, _In_ alljoyn_sessionid sessionId, _In_ PCSTR uniqueName)
+    static void AJ_CALL SessionMemberRemovedHandler(_In_ const void* context, _In_ alljoyn_sessionid sessionId, _In_ PCSTR uniqueName)
     {
         T^ caller = static_cast<const Platform::WeakReference*>(context)->Resolve<T>();
         caller->OnSessionMemberRemoved(sessionId, uniqueName);
@@ -157,7 +156,7 @@ public:
     // Callback for alljoyn_sessionportlistener_acceptsessionjoiner_ptr.
     // This callback expects the context to be of type T, which must implement the OnAcceptSessionJoiner function.
     template<class T>
-    static QCC_BOOL AcceptSessionJoinerHandler(
+    static QCC_BOOL AJ_CALL AcceptSessionJoinerHandler(
         _In_ const void* context,
         _In_ alljoyn_sessionport sessionPort,
         _In_ PCSTR joiner,
@@ -170,7 +169,7 @@ public:
     // Callback for alljoyn_sessionportlistener_sessionjoined_ptr.
     // This callback expects the context to be of type T, which must implement the OnSessionJoined function.
     template<class T>
-    static void SessionJoinedHandler(
+    static void AJ_CALL SessionJoinedHandler(
         _In_ const void* context,
         _In_ alljoyn_sessionport sessionPort,
         _In_ alljoyn_sessionid id,

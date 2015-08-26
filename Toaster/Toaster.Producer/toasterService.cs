@@ -3,78 +3,193 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using com.microsoft.sample;
-using Windows.Foundation;
+using System.Threading;
+using org.alljoyn.example.Toaster;
 using Windows.Devices.AllJoyn;
+using Windows.Foundation;
 
 namespace Toaster.Producer
 {
-	class toasterService : ItoasterService
+	class ToasterService : IToasterService
 	{
-		private uint darkness;
-		toasterSignals _toasterSignals;
+		byte darknessLevel;
+		UInt16 toasterVersion;
+		bool toasting;
 
-		public toasterService(toasterSignals toasterSignals)
+		CancellationTokenSource source;
+		CancellationToken token;
+
+		public ToasterService()
 		{
-			darkness = (uint)5;
-			_toasterSignals = toasterSignals;
+			darknessLevel = 5;
+			toasterVersion = 1;
+			toasting = false;
+			GetNewToken();
 		}
 
-
-		// Implement this function to handle calls to the startToasting method.
-		public IAsyncOperation<toasterStartToastingResult> StartToastingAsync(AllJoynMessageInfo info)
+		public UInt16 ToasterVersion
 		{
-			Task<toasterStartToastingResult> task = new Task<toasterStartToastingResult>(() =>
+			get
 			{
-				Task.Delay(TimeSpan.FromSeconds(darkness)).ContinueWith(_ => _toasterSignals.ToastDone(AllJoynStatus.Ok));
-				return toasterStartToastingResult.CreateSuccessResult();
-			});
-
-			task.Start();
-			return task.AsAsyncOperation();
+				return toasterVersion;
+			}
 		}
 
-		// Implement this function to handle calls to the stopToasting method.
-		public IAsyncOperation<toasterStopToastingResult> StopToastingAsync(AllJoynMessageInfo info)
+		private void GetNewToken()
 		{
-			Task<toasterStopToastingResult> task = new Task<toasterStopToastingResult>(() =>
+			source = new CancellationTokenSource();
+			token = source.Token;
+		}
+
+		public event EventHandler ToastBurnt;
+
+		protected virtual void OnToastBurnt(EventArgs e)
+		{
+			EventHandler handler = ToastBurnt;
+			if (handler != null)
 			{
-				return toasterStopToastingResult.CreateSuccessResult();
-			});
-
-			task.Start();
-			return task.AsAsyncOperation();
+				handler(this, e);
+			}
 		}
 
-		// Implement this function to handle requests for the value of the Darkness property.
-		//
-		// Currently, info will always be null, because no information is available about the requestor.
-		public IAsyncOperation<toasterGetDarknessResult> GetDarknessAsync(AllJoynMessageInfo info)
+		public event EventHandler StartedToasting;
+
+		protected virtual void OnStartedToasting(EventArgs e)
 		{
-			Task<toasterGetDarknessResult> task = new Task<toasterGetDarknessResult>(() =>
+			EventHandler handler = StartedToasting;
+			if (handler != null)
 			{
-				return toasterGetDarknessResult.CreateSuccessResult(darkness);
-			});
-
-			task.Start();
-			return task.AsAsyncOperation();
+				handler(this, e);
+			}
 		}
 
-		// Implement this function to handle requests to set the Darkness property.
-		//
-		// Currently, info will always be null, because no information is available about the requestor.
-		public IAsyncOperation<int> SetDarknessAsync(AllJoynMessageInfo info, uint value)
+		public event EventHandler StoppedToasting;
+
+		protected virtual void OnStoppedToasting(EventArgs e)
 		{
-			darkness = value;
+			EventHandler handler = StoppedToasting;
+			if (handler != null)
+			{
+				handler(this, e);
+			}
+		}
+
+		public event EventHandler DarknessChanged;
+
+		protected virtual void OnDarknessChanged(EventArgs e)
+		{
+			EventHandler handler = DarknessChanged;
+			if (handler != null)
+			{
+				handler(this, e);
+			}
+		}
+
+		public byte DarknessLevel
+		{
+			get
+			{
+				return darknessLevel;
+			}
+			set
+			{
+				darknessLevel = value;
+			}
+		}
+		
+		private async void ToastTask()
+		{
+			StartToasting();
 			
-
-			Task<int> task = new Task<int>(() =>
+			byte i;
+			for (i = 0; i < Math.Min(darknessLevel, (byte)10); i++)
 			{
-				return AllJoynStatus.Ok;
-			});
+				await Task.Delay(1000);
 
+				if (i == 7)
+				{
+					OnToastBurnt(EventArgs.Empty);
+				}
+			}
+			StopToasting();
+		}
+
+		private void StartToasting()
+		{
+			toasting = true;
+			OnStartedToasting(EventArgs.Empty);
+		}
+
+		private void StopToasting()
+		{
+			toasting = false;
+			OnStoppedToasting(EventArgs.Empty);			
+		}
+
+
+		public IAsyncOperation<ToasterGetDarknessLevelResult> GetDarknessLevelAsync(AllJoynMessageInfo info)
+		{
+			Task<ToasterGetDarknessLevelResult> task = new Task<ToasterGetDarknessLevelResult>(() =>
+			{
+				return ToasterGetDarknessLevelResult.CreateSuccessResult(darknessLevel);
+			});
 			task.Start();
+
 			return task.AsAsyncOperation();
 		}
+
+		public IAsyncOperation<ToasterGetVersionResult> GetVersionAsync(AllJoynMessageInfo info)
+		{
+			Task<ToasterGetVersionResult> task = new Task<ToasterGetVersionResult>(() =>
+			{
+				return ToasterGetVersionResult.CreateSuccessResult(toasterVersion);
+            });
+			task.Start();
+
+			return task.AsAsyncOperation();
+		}
+
+		public IAsyncOperation<ToasterSetDarknessLevelResult> SetDarknessLevelAsync(AllJoynMessageInfo info, byte value)
+		{
+			Task<ToasterSetDarknessLevelResult> task = new Task<ToasterSetDarknessLevelResult>(() =>
+			{				
+				darknessLevel = value;
+				OnDarknessChanged(EventArgs.Empty);
+				return ToasterSetDarknessLevelResult.CreateSuccessResult();
+            });
+			task.Start();
+
+			return task.AsAsyncOperation();
+		}
+
+		public IAsyncOperation<ToasterStartToastingResult> StartToastingAsync(AllJoynMessageInfo info)
+		{
+			Task<ToasterStartToastingResult> task = new Task<ToasterStartToastingResult>(() =>
+			{
+				Task toast = Task.Factory.StartNew(ToastTask, token);
+
+				return ToasterStartToastingResult.CreateSuccessResult();
+			});
+			task.Start();
+
+			return task.AsAsyncOperation();
+		}
+
+		public IAsyncOperation<ToasterStopToastingResult> StopToastingAsync(AllJoynMessageInfo info)
+		{
+			Task<ToasterStopToastingResult> task = new Task<ToasterStopToastingResult>(() =>
+			{
+				source.Cancel();
+				StopToasting();
+
+				GetNewToken();
+
+				return ToasterStopToastingResult.CreateSuccessResult();
+            });
+
+			task.Start();
+
+			return task.AsAsyncOperation();
+		}		
 	}
 }

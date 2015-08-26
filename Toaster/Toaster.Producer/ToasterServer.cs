@@ -4,37 +4,46 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.AllJoyn;
-using com.microsoft.sample;
+using org.alljoyn.example.Toaster;
 
 namespace Toaster.Producer
 {
 	class ToasterServer
 	{
-		private toasterProducer _toasterProducer;
-		private AllJoynBusAttachment toasterBusAttachment;
+		ToasterProducer toasterProducer;
+		ToasterService toasterService;
 
 		public ToasterServer()
 		{
-			_toasterProducer = null;
-			toasterBusAttachment = new AllJoynBusAttachment();
-			StartService();
+			AllJoynBusAttachment toasterBusAttachment = new AllJoynBusAttachment();
+			toasterProducer = new ToasterProducer(toasterBusAttachment);
+			toasterService = new ToasterService();
+			toasterService.ToastBurnt += ToasterService_ToastBurnt;
+			toasterProducer.Service = toasterService;
+			toasterProducer.Start();
 		}
 
-		private void StartService()
+		private void ToasterService_ToastBurnt(object sender, EventArgs e)
 		{
-			_toasterProducer = new toasterProducer(toasterBusAttachment);
-
-			// Initialize an object of SecureInterfaceService - the implementation of ISecureInterfaceService that will handle the concatenation method calls.
-			_toasterProducer.Service = new toasterService(_toasterProducer.Signals);
-			
-			// Create interface as defined in the introspect xml, create AllJoyn bus object
-			// and announce the about interface.
-			_toasterProducer.Start();
+			toasterProducer.Signals.ToastBurnt();
 		}
-
-		public void ToastDoneSignal()
+		
+		public ToasterService Service
 		{
-			_toasterProducer.Signals.ToastDone(AllJoynStatus.Ok);
+			get
+			{
+				return toasterService;
+			}
+		}
+		
+
+		public void DarknessChanged(byte darkness)
+		{
+			if (darkness != toasterService.DarknessLevel)
+			{
+				toasterService.DarknessLevel = darkness;
+				toasterProducer.EmitDarknessLevelChanged();
+			}			
 		}
 	}
 }

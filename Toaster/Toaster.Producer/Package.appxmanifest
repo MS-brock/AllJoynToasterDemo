@@ -7,11 +7,11 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="f178ec54-a07e-4bf8-9265-0bb8ccb09b99"
+    Name="321ed3ad-aea6-48a4-9a5d-ff7d348ce83d"
     Publisher="CN=brock"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="f178ec54-a07e-4bf8-9265-0bb8ccb09b99" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="321ed3ad-aea6-48a4-9a5d-ff7d348ce83d" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>Toaster.Producer</DisplayName>
@@ -20,7 +20,7 @@
   </Properties>
 
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.10069.0" MaxVersionTested="10.0.10069.0" />
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
   </Dependencies>
 
   <Resources>
@@ -33,17 +33,17 @@
       EntryPoint="Toaster.Producer.App">
       <uap:VisualElements
         DisplayName="Toaster.Producer"
-        Square150x150Logo="Assets\Logo.png"
-        Square44x44Logo="Assets\SmallLogo.png"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png"
         Description="Toaster.Producer"
-        BackgroundColor="#464646">
+        BackgroundColor="transparent">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
     </Application>
   </Applications>
 
   <Capabilities>
-    <Capability Name="internetClient" />
-	<Capability Name="allJoyn" />
+    <Capability Name="allJoyn" />
   </Capabilities>
 </Package>

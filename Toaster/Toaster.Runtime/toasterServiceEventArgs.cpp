@@ -5,19 +5,18 @@
 //   Changes to this file may cause incorrect behavior and will be lost if  
 //   the code is regenerated.
 //
-//   Tool: AllJoynCodeGen.exe
-//   Version: 1.0.0
+//   Tool: AllJoynCodeGenerator.exe
 //
 //   This tool is located in the Windows 10 SDK and the Windows 10 AllJoyn 
-//   Visual Studio Extension in the Visual Studio Extension Gallery.  
+//   Visual Studio Extension in the Visual Studio Gallery.  
 //
 //   The generated code should be packaged in a Windows 10 C++/CX Runtime  
-//   Component which can be consumed in any UAP-supported language using 
+//   Component which can be consumed in any UWP-supported language using 
 //   APIs that are available in Windows.Devices.AllJoyn.
 //
-//   Using AllJoynCodeGen - Invoke the following command with a valid 
-//   Introspection XML file:
-//     AllJoynCodeGen -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
+//   Using AllJoynCodeGenerator - Invoke the following command with a valid 
+//   Introspection XML file and a writable output directory:
+//     AllJoynCodeGenerator -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
 // </auto-generated>
 //-----------------------------------------------------------------------------
 #include "pch.h"
@@ -28,19 +27,20 @@ using namespace Platform;
 using namespace Windows::Foundation;
 using namespace Windows::Foundation::Collections;
 using namespace Windows::Devices::AllJoyn;
-using namespace com::microsoft::sample;
-namespace com { namespace microsoft { namespace sample {
+using namespace org::alljoyn::example::Toaster;
+namespace org { namespace alljoyn { namespace example { namespace Toaster {
 
 // Methods
-toasterStartToastingCalledEventArgs::toasterStartToastingCalledEventArgs(
+ToasterStartToastingCalledEventArgs::ToasterStartToastingCalledEventArgs(
     _In_ AllJoynMessageInfo^ info)
     : m_raised(false),
     m_completionsRequired(0),
     m_messageInfo(info)
 {
+	m_result = ToasterStartToastingResult::CreateFailureResult(ER_NOT_IMPLEMENTED);
 }
 
-Deferral^ toasterStartToastingCalledEventArgs::GetDeferral()
+Deferral^ ToasterStartToastingCalledEventArgs::GetDeferral()
 {
     std::lock_guard<std::mutex> lockGuard(m_lock);
     if (m_raised)
@@ -50,11 +50,11 @@ Deferral^ toasterStartToastingCalledEventArgs::GetDeferral()
     }
 
     m_completionsRequired++;
-    auto handler = ref new DeferralCompletedHandler(this, &toasterStartToastingCalledEventArgs::Complete);
+    auto handler = ref new DeferralCompletedHandler(this, &ToasterStartToastingCalledEventArgs::Complete);
     return ref new Deferral(handler);
 }
 
-void toasterStartToastingCalledEventArgs::InvokeAllFinished()
+void ToasterStartToastingCalledEventArgs::InvokeAllFinished()
 {
     bool invokeNeeded;
 
@@ -71,7 +71,7 @@ void toasterStartToastingCalledEventArgs::InvokeAllFinished()
     }
 }
 
-void toasterStartToastingCalledEventArgs::Complete()
+void ToasterStartToastingCalledEventArgs::Complete()
 {
     bool invokeNeeded;
 
@@ -94,20 +94,28 @@ void toasterStartToastingCalledEventArgs::Complete()
     }
 }
 
-void toasterStartToastingCalledEventArgs::InvokeCompleteHandler()
+void ToasterStartToastingCalledEventArgs::InvokeCompleteHandler()
 {
-    m_tce.set(m_result);
+    if (m_result->Status == ER_NOT_IMPLEMENTED)
+    {
+        throw Exception::CreateException(E_NOTIMPL, "No handlers are registered for StartToastingCalled.");
+    }
+    else
+    {
+        m_tce.set(m_result);
+    }
 }
 
-toasterStopToastingCalledEventArgs::toasterStopToastingCalledEventArgs(
+ToasterStopToastingCalledEventArgs::ToasterStopToastingCalledEventArgs(
     _In_ AllJoynMessageInfo^ info)
     : m_raised(false),
     m_completionsRequired(0),
     m_messageInfo(info)
 {
+	m_result = ToasterStopToastingResult::CreateFailureResult(ER_NOT_IMPLEMENTED);
 }
 
-Deferral^ toasterStopToastingCalledEventArgs::GetDeferral()
+Deferral^ ToasterStopToastingCalledEventArgs::GetDeferral()
 {
     std::lock_guard<std::mutex> lockGuard(m_lock);
     if (m_raised)
@@ -117,11 +125,11 @@ Deferral^ toasterStopToastingCalledEventArgs::GetDeferral()
     }
 
     m_completionsRequired++;
-    auto handler = ref new DeferralCompletedHandler(this, &toasterStopToastingCalledEventArgs::Complete);
+    auto handler = ref new DeferralCompletedHandler(this, &ToasterStopToastingCalledEventArgs::Complete);
     return ref new Deferral(handler);
 }
 
-void toasterStopToastingCalledEventArgs::InvokeAllFinished()
+void ToasterStopToastingCalledEventArgs::InvokeAllFinished()
 {
     bool invokeNeeded;
 
@@ -138,7 +146,7 @@ void toasterStopToastingCalledEventArgs::InvokeAllFinished()
     }
 }
 
-void toasterStopToastingCalledEventArgs::Complete()
+void ToasterStopToastingCalledEventArgs::Complete()
 {
     bool invokeNeeded;
 
@@ -161,21 +169,29 @@ void toasterStopToastingCalledEventArgs::Complete()
     }
 }
 
-void toasterStopToastingCalledEventArgs::InvokeCompleteHandler()
+void ToasterStopToastingCalledEventArgs::InvokeCompleteHandler()
 {
-    m_tce.set(m_result);
+    if (m_result->Status == ER_NOT_IMPLEMENTED)
+    {
+        throw Exception::CreateException(E_NOTIMPL, "No handlers are registered for StopToastingCalled.");
+    }
+    else
+    {
+        m_tce.set(m_result);
+    }
 }
 
 // Readable Properties
-toasterGetDarknessRequestedEventArgs::toasterGetDarknessRequestedEventArgs(
+ToasterGetVersionRequestedEventArgs::ToasterGetVersionRequestedEventArgs(
     _In_ AllJoynMessageInfo^ info)
     : m_raised(false),
     m_completionsRequired(0),
     m_messageInfo(info)
 {
+	m_result = ToasterGetVersionResult::CreateFailureResult(ER_NOT_IMPLEMENTED);
 }
 
-Deferral^ toasterGetDarknessRequestedEventArgs::GetDeferral()
+Deferral^ ToasterGetVersionRequestedEventArgs::GetDeferral()
 {
     std::lock_guard<std::mutex> lockGuard(m_lock);
     if (m_raised)
@@ -185,11 +201,11 @@ Deferral^ toasterGetDarknessRequestedEventArgs::GetDeferral()
     }
 
     m_completionsRequired++;
-    auto handler = ref new DeferralCompletedHandler(this, &toasterGetDarknessRequestedEventArgs::Complete);
+    auto handler = ref new DeferralCompletedHandler(this, &ToasterGetVersionRequestedEventArgs::Complete);
     return ref new Deferral(handler);
 }
 
-void toasterGetDarknessRequestedEventArgs::InvokeAllFinished()
+void ToasterGetVersionRequestedEventArgs::InvokeAllFinished()
 {
     bool invokeNeeded;
 
@@ -206,7 +222,7 @@ void toasterGetDarknessRequestedEventArgs::InvokeAllFinished()
     }
 }
 
-void toasterGetDarknessRequestedEventArgs::Complete()
+void ToasterGetVersionRequestedEventArgs::Complete()
 {
     bool invokeNeeded;
 
@@ -229,27 +245,106 @@ void toasterGetDarknessRequestedEventArgs::Complete()
     }
 }
 
-void toasterGetDarknessRequestedEventArgs::InvokeCompleteHandler()
+void ToasterGetVersionRequestedEventArgs::InvokeCompleteHandler()
 {
-    m_tce.set(m_result);
+    if (m_result->Status == ER_NOT_IMPLEMENTED)
+    {
+        throw Exception::CreateException(E_NOTIMPL, "No handlers are registered for GetVersionRequested.");
+    }
+    else
+    {
+        m_tce.set(m_result);
+    }
+}
+
+ToasterGetDarknessLevelRequestedEventArgs::ToasterGetDarknessLevelRequestedEventArgs(
+    _In_ AllJoynMessageInfo^ info)
+    : m_raised(false),
+    m_completionsRequired(0),
+    m_messageInfo(info)
+{
+	m_result = ToasterGetDarknessLevelResult::CreateFailureResult(ER_NOT_IMPLEMENTED);
+}
+
+Deferral^ ToasterGetDarknessLevelRequestedEventArgs::GetDeferral()
+{
+    std::lock_guard<std::mutex> lockGuard(m_lock);
+    if (m_raised)
+    {
+        // Cannot ask for a deferral after the event handler has returned.
+        throw Exception::CreateException(E_ILLEGAL_METHOD_CALL);
+    }
+
+    m_completionsRequired++;
+    auto handler = ref new DeferralCompletedHandler(this, &ToasterGetDarknessLevelRequestedEventArgs::Complete);
+    return ref new Deferral(handler);
+}
+
+void ToasterGetDarknessLevelRequestedEventArgs::InvokeAllFinished()
+{
+    bool invokeNeeded;
+
+    // We need to hold a lock while modifying private state, but release it before invoking a completion handler.
+    {
+        std::lock_guard<std::mutex> lockGuard(m_lock);
+        m_raised = true;
+        invokeNeeded = (m_completionsRequired == 0);
+    }
+
+    if (invokeNeeded)
+    {
+        InvokeCompleteHandler();
+    }
+}
+
+void ToasterGetDarknessLevelRequestedEventArgs::Complete()
+{
+    bool invokeNeeded;
+
+    // We need to hold a lock while modifying private state, but release it before invoking a completion handler.
+    {
+        std::lock_guard<std::mutex> lockGuard(m_lock);
+        if (m_completionsRequired == 0)
+        {
+            // This should never happen since Complete() should only be called by Windows.Foundation.Deferral
+            // which will only invoke our completion handler once.
+            throw Exception::CreateException(E_ILLEGAL_METHOD_CALL);
+        }
+        m_completionsRequired--;
+        invokeNeeded = (m_raised && (m_completionsRequired == 0));
+    }
+
+    if (invokeNeeded)
+    {
+        InvokeCompleteHandler();
+    }
+}
+
+void ToasterGetDarknessLevelRequestedEventArgs::InvokeCompleteHandler()
+{
+    if (m_result->Status == ER_NOT_IMPLEMENTED)
+    {
+        throw Exception::CreateException(E_NOTIMPL, "No handlers are registered for GetDarknessLevelRequested.");
+    }
+    else
+    {
+        m_tce.set(m_result);
+    }
 }
 
 // Writable Properties
-toasterSetDarknessRequestedEventArgs::toasterSetDarknessRequestedEventArgs(
+ToasterSetDarknessLevelRequestedEventArgs::ToasterSetDarknessLevelRequestedEventArgs(
     _In_ AllJoynMessageInfo^ info,
-    _In_ uint32 value)
+    _In_ byte value)
     : m_raised(false),
     m_completionsRequired(0),
     m_messageInfo(info),
     m_value(value)
 {
-    // If no event listener is registered by the app, the handler is not implemented.
-    // This will result in InvokeCompleteHandler throwing an exception unless some
-    // event listener actually runs and sets the result status.
-    m_resultStatus = ER_NOT_IMPLEMENTED;
+	m_result = ToasterSetDarknessLevelResult::CreateFailureResult(ER_NOT_IMPLEMENTED);
 }
 
-Deferral^ toasterSetDarknessRequestedEventArgs::GetDeferral()
+Deferral^ ToasterSetDarknessLevelRequestedEventArgs::GetDeferral()
 {
     std::lock_guard<std::mutex> lockGuard(m_lock);
     if (m_raised)
@@ -259,11 +354,11 @@ Deferral^ toasterSetDarknessRequestedEventArgs::GetDeferral()
     }
 
     m_completionsRequired++;
-    auto handler = ref new DeferralCompletedHandler(this, &toasterSetDarknessRequestedEventArgs::Complete);
+    auto handler = ref new DeferralCompletedHandler(this, &ToasterSetDarknessLevelRequestedEventArgs::Complete);
     return ref new Deferral(handler);
 }
 
-void toasterSetDarknessRequestedEventArgs::InvokeAllFinished()
+void ToasterSetDarknessLevelRequestedEventArgs::InvokeAllFinished()
 {
     bool invokeNeeded;
 
@@ -280,7 +375,7 @@ void toasterSetDarknessRequestedEventArgs::InvokeAllFinished()
     }
 }
 
-void toasterSetDarknessRequestedEventArgs::Complete()
+void ToasterSetDarknessLevelRequestedEventArgs::Complete()
 {
     bool invokeNeeded;
 
@@ -303,16 +398,16 @@ void toasterSetDarknessRequestedEventArgs::Complete()
     }
 }
 
-void toasterSetDarknessRequestedEventArgs::InvokeCompleteHandler()
+void ToasterSetDarknessLevelRequestedEventArgs::InvokeCompleteHandler()
 {
-    if (m_resultStatus == ER_NOT_IMPLEMENTED)
+    if (m_result->Status == ER_NOT_IMPLEMENTED)
     {
-        m_tce.set_exception(std::make_exception_ptr(std::runtime_error("no listeners registered for SetNameRequested")));
+        throw Exception::CreateException(E_NOTIMPL, "No handlers are registered for SetDarknessLevelRequested.");
     }
     else
     {
-        m_tce.set(m_resultStatus);
+        m_tce.set(m_result);
     }
 }
 
-} } } 
+} } } } 

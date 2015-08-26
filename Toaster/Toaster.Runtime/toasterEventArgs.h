@@ -5,27 +5,26 @@
 //   Changes to this file may cause incorrect behavior and will be lost if  
 //   the code is regenerated.
 //
-//   Tool: AllJoynCodeGen.exe
-//   Version: 1.0.0
+//   Tool: AllJoynCodeGenerator.exe
 //
 //   This tool is located in the Windows 10 SDK and the Windows 10 AllJoyn 
-//   Visual Studio Extension in the Visual Studio Extension Gallery.  
+//   Visual Studio Extension in the Visual Studio Gallery.  
 //
 //   The generated code should be packaged in a Windows 10 C++/CX Runtime  
-//   Component which can be consumed in any UAP-supported language using 
+//   Component which can be consumed in any UWP-supported language using 
 //   APIs that are available in Windows.Devices.AllJoyn.
 //
-//   Using AllJoynCodeGen - Invoke the following command with a valid 
-//   Introspection XML file:
-//     AllJoynCodeGen -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
+//   Using AllJoynCodeGenerator - Invoke the following command with a valid 
+//   Introspection XML file and a writable output directory:
+//     AllJoynCodeGenerator -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
 // </auto-generated>
 //-----------------------------------------------------------------------------
 #pragma once
 
-namespace com { namespace microsoft { namespace sample {
+namespace org { namespace alljoyn { namespace example { namespace Toaster {
 
 // Signals
-public ref class toasterToastDoneReceivedEventArgs sealed
+public ref class ToasterToastBurntReceivedEventArgs sealed
 {
 public:
     property Windows::Devices::AllJoyn::AllJoynMessageInfo^ MessageInfo
@@ -34,18 +33,11 @@ public:
         void set(_In_ Windows::Devices::AllJoyn::AllJoynMessageInfo^ value) { m_messageInfo = value; }
     }
 
-    property int32 Status
-    {
-        int32 get() { return m_interface_status; }
-    internal:
-        void set(_In_ int32 value) { m_interface_status = value; }
-    }
 
 private:
     Windows::Devices::AllJoyn::AllJoynMessageInfo^ m_messageInfo;
 
-    int32 m_interface_status;
 };
 
 
-} } } 
+} } } } 

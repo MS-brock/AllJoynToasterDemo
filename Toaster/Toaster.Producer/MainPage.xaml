@@ -5,10 +5,14 @@
     xmlns:local="using:Toaster.Producer"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Width="353.955" Height="413.761">
+    mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<TextBlock x:Name="TitleLabel" HorizontalAlignment="Left" Margin="53,44,0,0" TextWrapping="Wrap" Text="AllJoyn-enabled Toaster" VerticalAlignment="Top" Height="42" Width="208"/>
-        <Button x:Name="ToastDoneButton" Content="Send ToastDone Signal" HorizontalAlignment="Left" Margin="89,146,0,0" VerticalAlignment="Top" Click="ToastDoneButton_Click"/>
-	</Grid>
+        <TextBlock x:Name="ToasterTitle" HorizontalAlignment="Left" Margin="44,10,0,0" TextWrapping="Wrap" Text="AllJoyn Toaster Producer" VerticalAlignment="Top" Height="40" Width="260" FontSize="24"/>
+        <Slider x:Name="DarknessLevelSlider" HorizontalAlignment="Left" Margin="44,338,0,0" VerticalAlignment="Top" Width="260" LargeChange="2" Maximum="10" Minimum="1" ValueChanged="DarknessLevelSlider_ValueChanged"/>
+        <TextBlock x:Name="DarknessLevelSliderTitle" HorizontalAlignment="Left" Margin="123,320,0,0" TextWrapping="Wrap" Text="DarknessLevel" VerticalAlignment="Top" Width="110"/>
+        <TextBlock x:Name="ToasterVersionTitle" HorizontalAlignment="Left" Margin="44,454,0,0" TextWrapping="Wrap" Text="ToasterVersion: " VerticalAlignment="Top" Width="110"/>
+        <TextBlock x:Name="ToasterVersionText" HorizontalAlignment="Left" Margin="154,454,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="110" />
+        <ToggleSwitch x:Name="ToastingIndicator" Header="Status" HorizontalAlignment="Left" Margin="110,169,0,0" VerticalAlignment="Top" OffContent="Off" OnContent="Toasting" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False" ManipulationMode="None"/>
+    </Grid>
 </Page>

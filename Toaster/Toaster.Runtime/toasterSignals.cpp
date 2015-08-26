@@ -5,19 +5,18 @@
 //   Changes to this file may cause incorrect behavior and will be lost if  
 //   the code is regenerated.
 //
-//   Tool: AllJoynCodeGen.exe
-//   Version: 1.0.0
+//   Tool: AllJoynCodeGenerator.exe
 //
 //   This tool is located in the Windows 10 SDK and the Windows 10 AllJoyn 
-//   Visual Studio Extension in the Visual Studio Extension Gallery.  
+//   Visual Studio Extension in the Visual Studio Gallery.  
 //
 //   The generated code should be packaged in a Windows 10 C++/CX Runtime  
-//   Component which can be consumed in any UAP-supported language using 
+//   Component which can be consumed in any UWP-supported language using 
 //   APIs that are available in Windows.Devices.AllJoyn.
 //
-//   Using AllJoynCodeGen - Invoke the following command with a valid 
-//   Introspection XML file:
-//     AllJoynCodeGen -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
+//   Using AllJoynCodeGenerator - Invoke the following command with a valid 
+//   Introspection XML file and a writable output directory:
+//     AllJoynCodeGenerator -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
 // </auto-generated>
 //-----------------------------------------------------------------------------
 #include "pch.h"
@@ -26,33 +25,32 @@ using namespace Microsoft::WRL;
 using namespace Platform;
 using namespace Windows::Devices::AllJoyn;
 using namespace Windows::Foundation;
-using namespace com::microsoft::sample;
+using namespace org::alljoyn::example::Toaster;
 
-void toasterSignals::Initialize(_In_ alljoyn_busobject busObject, _In_ alljoyn_sessionid sessionId)
+void ToasterSignals::Initialize(_In_ alljoyn_busobject busObject, _In_ alljoyn_sessionid sessionId)
 {
     m_busObject = busObject;
     m_sessionId = sessionId;
 
-    auto interfaceDefinition = alljoyn_busattachment_getinterface(alljoyn_busobject_getbusattachment(busObject), "com.microsoft.sample.toaster");
-    alljoyn_interfacedescription_getmember(interfaceDefinition, "toastDone", &m_memberToastDone);
+    auto interfaceDefinition = alljoyn_busattachment_getinterface(alljoyn_busobject_getbusattachment(busObject), "org.alljoyn.example.Toaster");
+    alljoyn_interfacedescription_getmember(interfaceDefinition, "ToastBurnt", &m_memberToastBurnt);
 }
 
-void toasterSignals::ToastDone(_In_ int32 interface_status)
+void ToasterSignals::ToastBurnt()
 {
     if (nullptr == m_busObject)
     {
         return;
     }
 
-    size_t argCount = 1;
+    size_t argCount = 0;
     alljoyn_msgarg arguments = alljoyn_msgarg_array_create(argCount);
-    TypeConversionHelpers::SetAllJoynMessageArg(alljoyn_msgarg_array_element(arguments, 0), "i", interface_status);
     
     alljoyn_busobject_signal(
         m_busObject, 
         NULL,  // Generated code only supports broadcast signals.
         m_sessionId,
-        m_memberToastDone,
+        m_memberToastBurnt,
         arguments,
         argCount, 
         0, // A signal with a TTL of 0 will be sent to every member of the session, regardless of how long it takes to deliver the message
@@ -62,10 +60,10 @@ void toasterSignals::ToastDone(_In_ int32 interface_status)
     alljoyn_msgarg_destroy(arguments);
 }
 
-void toasterSignals::CallToastDoneReceived(_In_ toasterSignals^ sender, _In_ toasterToastDoneReceivedEventArgs^ args)
+void ToasterSignals::CallToastBurntReceived(_In_ ToasterSignals^ sender, _In_ ToasterToastBurntReceivedEventArgs^ args)
 {
     AllJoynHelpers::DispatchEvent([=]() {
-        ToastDoneReceived(sender, args);
+        ToastBurntReceived(sender, args);
     });
 }
 

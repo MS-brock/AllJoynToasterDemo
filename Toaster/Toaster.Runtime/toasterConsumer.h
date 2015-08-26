@@ -5,68 +5,74 @@
 //   Changes to this file may cause incorrect behavior and will be lost if  
 //   the code is regenerated.
 //
-//   Tool: AllJoynCodeGen.exe
-//   Version: 1.0.0
+//   Tool: AllJoynCodeGenerator.exe
 //
 //   This tool is located in the Windows 10 SDK and the Windows 10 AllJoyn 
-//   Visual Studio Extension in the Visual Studio Extension Gallery.  
+//   Visual Studio Extension in the Visual Studio Gallery.  
 //
 //   The generated code should be packaged in a Windows 10 C++/CX Runtime  
-//   Component which can be consumed in any UAP-supported language using 
+//   Component which can be consumed in any UWP-supported language using 
 //   APIs that are available in Windows.Devices.AllJoyn.
 //
-//   Using AllJoynCodeGen - Invoke the following command with a valid 
-//   Introspection XML file:
-//     AllJoynCodeGen -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
+//   Using AllJoynCodeGenerator - Invoke the following command with a valid 
+//   Introspection XML file and a writable output directory:
+//     AllJoynCodeGenerator -i <INPUT XML FILE> -o <OUTPUT DIRECTORY>
 // </auto-generated>
 //-----------------------------------------------------------------------------
 #pragma once
 
-namespace com { namespace microsoft { namespace sample {
+namespace org { namespace alljoyn { namespace example { namespace Toaster {
 
-public interface class ItoasterConsumer
+public interface class IToasterConsumer
 {
-    event Windows::Foundation::TypedEventHandler<toasterConsumer^, Windows::Devices::AllJoyn::AllJoynSessionLostEventArgs^>^ SessionLost;
-    event Windows::Foundation::TypedEventHandler<toasterConsumer^, Windows::Devices::AllJoyn::AllJoynSessionMemberAddedEventArgs^>^ SessionMemberAdded;
-    event Windows::Foundation::TypedEventHandler<toasterConsumer^, Windows::Devices::AllJoyn::AllJoynSessionMemberRemovedEventArgs^>^ SessionMemberRemoved;
+    event Windows::Foundation::TypedEventHandler<ToasterConsumer^, Windows::Devices::AllJoyn::AllJoynSessionLostEventArgs^>^ SessionLost;
+    event Windows::Foundation::TypedEventHandler<ToasterConsumer^, Windows::Devices::AllJoyn::AllJoynSessionMemberAddedEventArgs^>^ SessionMemberAdded;
+    event Windows::Foundation::TypedEventHandler<ToasterConsumer^, Windows::Devices::AllJoyn::AllJoynSessionMemberRemovedEventArgs^>^ SessionMemberRemoved;
+    event Windows::Foundation::TypedEventHandler<ToasterConsumer^, Platform::Object^>^ DarknessLevelChanged;
 };
 
-public ref class toasterConsumer sealed  : [Windows::Foundation::Metadata::Default] ItoasterConsumer
+public ref class ToasterConsumer sealed  : [Windows::Foundation::Metadata::Default] IToasterConsumer
 {
 public:
-    toasterConsumer(Windows::Devices::AllJoyn::AllJoynBusAttachment^ busAttachment);
-    virtual ~toasterConsumer();
+    ToasterConsumer(Windows::Devices::AllJoyn::AllJoynBusAttachment^ busAttachment);
+    virtual ~ToasterConsumer();
 
     // Join the AllJoyn session specified by sessionName.
     //
     // This will usually be called after the unique name of a producer has been reported
     // in the Added callback on the Watcher.
-    static Windows::Foundation::IAsyncOperation<toasterJoinSessionResult^>^ JoinSessionAsync(_In_ Windows::Devices::AllJoyn::AllJoynServiceInfo^ serviceInfo, _Inout_ toasterWatcher^ watcher);
+    static Windows::Foundation::IAsyncOperation<ToasterJoinSessionResult^>^ JoinSessionAsync(_In_ Windows::Devices::AllJoyn::AllJoynServiceInfo^ serviceInfo, _Inout_ ToasterWatcher^ watcher);
 
-    // Call the startToasting method
-    Windows::Foundation::IAsyncOperation<toasterStartToastingResult^>^ StartToastingAsync();
-    // Call the stopToasting method
-    Windows::Foundation::IAsyncOperation<toasterStopToastingResult^>^ StopToastingAsync();
-    // Get the value of the Darkness property.
-    Windows::Foundation::IAsyncOperation<toasterGetDarknessResult^>^ GetDarknessAsync();
+    // Call the StartToasting method
+    Windows::Foundation::IAsyncOperation<ToasterStartToastingResult^>^ StartToastingAsync();
+    // Call the StopToasting method
+    Windows::Foundation::IAsyncOperation<ToasterStopToastingResult^>^ StopToastingAsync();
+    // Get the value of the Version property.
+    Windows::Foundation::IAsyncOperation<ToasterGetVersionResult^>^ GetVersionAsync();
 
-    // Set the value of the Darkness property.
-    Windows::Foundation::IAsyncOperation<int>^ SetDarknessAsync(_In_ uint32 value);
+    // This event fires whenever the value of DarknessLevel changes.
+    virtual event Windows::Foundation::TypedEventHandler<ToasterConsumer^, Platform::Object^>^ DarknessLevelChanged;
+    
+    // Get the value of the DarknessLevel property.
+    Windows::Foundation::IAsyncOperation<ToasterGetDarknessLevelResult^>^ GetDarknessLevelAsync();
+
+    // Set the value of the DarknessLevel property.
+    Windows::Foundation::IAsyncOperation<ToasterSetDarknessLevelResult^>^ SetDarknessLevelAsync(_In_ byte value);
 
     // Used to send signals or register functions to handle received signals.
-    property toasterSignals^ Signals
+    property ToasterSignals^ Signals
     {
-        toasterSignals^ get() { return m_signals; }
+        ToasterSignals^ get() { return m_signals; }
     }
 
     // This event will fire whenever the consumer loses the session that it is a member of.
-    virtual event Windows::Foundation::TypedEventHandler<toasterConsumer^, Windows::Devices::AllJoyn::AllJoynSessionLostEventArgs^>^ SessionLost;
+    virtual event Windows::Foundation::TypedEventHandler<ToasterConsumer^, Windows::Devices::AllJoyn::AllJoynSessionLostEventArgs^>^ SessionLost;
 
     // This event will fire whenever a member joins the session.
-    virtual event Windows::Foundation::TypedEventHandler<toasterConsumer^, Windows::Devices::AllJoyn::AllJoynSessionMemberAddedEventArgs^>^ SessionMemberAdded;
+    virtual event Windows::Foundation::TypedEventHandler<ToasterConsumer^, Windows::Devices::AllJoyn::AllJoynSessionMemberAddedEventArgs^>^ SessionMemberAdded;
 
     // This event will fire whenever a member leaves the session.
-    virtual event Windows::Foundation::TypedEventHandler<toasterConsumer^, Windows::Devices::AllJoyn::AllJoynSessionMemberRemovedEventArgs^>^ SessionMemberRemoved;
+    virtual event Windows::Foundation::TypedEventHandler<ToasterConsumer^, Windows::Devices::AllJoyn::AllJoynSessionMemberRemovedEventArgs^>^ SessionMemberRemoved;
 
 internal:
     // Consumers do not support property get.
@@ -124,16 +130,17 @@ private:
     // Register a callback function to handle incoming signals.
     QStatus AddSignalHandler(_In_ alljoyn_busattachment busAttachment, _In_ alljoyn_interfacedescription interfaceDescription, _In_ PCSTR methodName, _In_ alljoyn_messagereceiver_signalhandler_ptr handler);
 
-    static void CallToastDoneSignalHandler(_In_ const alljoyn_interfacedescription_member* member, _In_ alljoyn_message message);
+    static void CallToastBurntSignalHandler(_In_ const alljoyn_interfacedescription_member* member, _In_ alljoyn_message message);
     
     Windows::Devices::AllJoyn::AllJoynBusAttachment^ m_busAttachment;
-    toasterSignals^ m_signals;
+    ToasterSignals^ m_signals;
     Platform::String^ m_ServiceObjectPath;
 
     alljoyn_proxybusobject m_proxyBusObject;
     alljoyn_busobject m_busObject;
     alljoyn_sessionlistener m_sessionListener;
     alljoyn_sessionid m_sessionId;
+    alljoyn_busattachment m_nativeBusAttachment;
 
     // Used to pass a pointer to this class to callbacks
     Platform::WeakReference* m_weak;
@@ -144,4 +151,4 @@ private:
     static std::map<alljoyn_interfacedescription, Platform::WeakReference*> SourceInterfaces;
 };
 
-} } } 
+} } } } 

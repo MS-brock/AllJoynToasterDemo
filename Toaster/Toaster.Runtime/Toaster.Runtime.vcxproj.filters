@@ -2,34 +2,36 @@
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Resources">
-      <UniqueIdentifier>eb628de0-4b50-478e-9563-bdd92a1da684</UniqueIdentifier>
+      <UniqueIdentifier>3aa52aff-d5be-4e54-b0f9-83aa2e55dc66</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="AllJoynBusObjectManager.cpp" />
     <ClCompile Include="AllJoynHelpers.cpp" />
-    <ClCompile Include="toasterConsumer.cpp" />
-    <ClCompile Include="toasterProducer.cpp" />
-    <ClCompile Include="toasterServiceEventAdapter.cpp" />
-    <ClCompile Include="toasterServiceEventArgs.cpp" />
-    <ClCompile Include="toasterSignals.cpp" />
-    <ClCompile Include="toasterWatcher.cpp" />
+    <ClCompile Include="ToasterConsumer.cpp" />
+    <ClCompile Include="ToasterProducer.cpp" />
+    <ClCompile Include="ToasterServiceEventAdapter.cpp" />
+    <ClCompile Include="ToasterServiceEventArgs.cpp" />
+    <ClCompile Include="ToasterSignals.cpp" />
+    <ClCompile Include="ToasterWatcher.cpp" />
     <ClCompile Include="TypeConversionHelpers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="AllJoynBusObjectManager.h" />
     <ClInclude Include="AllJoynHelpers.h" />
-    <ClInclude Include="ItoasterService.h" />
-    <ClInclude Include="toasterConsumer.h" />
-    <ClInclude Include="toasterEventArgs.h" />
-    <ClInclude Include="toasterMethodResults.h" />
-    <ClInclude Include="toasterProducer.h" />
-    <ClInclude Include="toasterServiceEventAdapter.h" />
-    <ClInclude Include="toasterServiceEventArgs.h" />
-    <ClInclude Include="toasterSignals.h" />
-    <ClInclude Include="toasterStructures.h" />
-    <ClInclude Include="toasterWatcher.h" />
+    <ClInclude Include="IToasterService.h" />
+    <ClInclude Include="ToasterConsumer.h" />
+    <ClInclude Include="ToasterEventArgs.h" />
+    <ClInclude Include="ToasterMethodResults.h" />
+    <ClInclude Include="ToasterProducer.h" />
+    <ClInclude Include="ToasterServiceEventAdapter.h" />
+    <ClInclude Include="ToasterServiceEventArgs.h" />
+    <ClInclude Include="ToasterSignals.h" />
+    <ClInclude Include="ToasterStructures.h" />
+    <ClInclude Include="ToasterWatcher.h" />
     <ClInclude Include="TypeConversionHelpers.h" />
   </ItemGroup>
 </Project>
