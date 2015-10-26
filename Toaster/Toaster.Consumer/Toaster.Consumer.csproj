@@ -101,6 +101,8 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ToasterClient.cs" />
+    <Compile Include="ToasterFinder.cs" />
+    <Compile Include="ToasterFoundEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

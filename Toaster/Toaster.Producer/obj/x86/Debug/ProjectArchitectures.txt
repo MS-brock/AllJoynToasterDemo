@@ -1,2 +1,0 @@
-C:\Users\brock.REDMOND\source\repos\AllJoynToasterDemo\Toaster\org.alljoyn.example.Toaster\org.alljoyn.example.Toaster.vcxproj;x86
-C:\Users\brock.REDMOND\source\repos\AllJoynToasterDemo\Toaster\Toaster.Producer\Toaster.Producer.csproj;x86

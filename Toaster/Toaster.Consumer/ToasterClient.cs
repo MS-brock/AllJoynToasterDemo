@@ -15,45 +15,15 @@ namespace Toaster.Consumer
 
 		ToasterConsumer toasterConsumer;
 		
-		public ToasterClient()
+		public ToasterClient(ToasterConsumer consumer)
 		{
+            toasterConsumer = consumer;
 			toasterVersion = 0;
-			darknessLevel = 0;			
-		}
+			darknessLevel = 0;
 
-		public void FindToaster()
-		{
-			AllJoynBusAttachment toasterBusAttachment = new AllJoynBusAttachment();
-			ToasterWatcher toasterWatcher = new ToasterWatcher(toasterBusAttachment);
-			toasterWatcher.Added += ToasterWatcher_Added;
-			toasterWatcher.Start();
-		}
-
-		public event EventHandler ToasterProducerFound;
-
-		protected virtual void OnToasterProducerFound(EventArgs e)
-		{
-			EventHandler handler = ToasterProducerFound;
-			if (handler != null)
-			{
-				handler(this, e);
-			}
-		}
-
-		private async void ToasterWatcher_Added(ToasterWatcher sender, AllJoynServiceInfo args)
-		{
-			ToasterJoinSessionResult toasterJoinSessionResult = await ToasterConsumer.JoinSessionAsync(args, sender);
-
-			if (toasterJoinSessionResult.Status == AllJoynStatus.Ok)
-			{
-				toasterConsumer = toasterJoinSessionResult.Consumer;
-				
-				GetToasterVersion();
-				GetToasterDarknessLevel();
-
-				OnToasterProducerFound(EventArgs.Empty);
-			}
-		}
+            GetToasterVersion();
+            GetToasterDarknessLevel();
+        }
 
 		public ToasterConsumer Consumer
 		{

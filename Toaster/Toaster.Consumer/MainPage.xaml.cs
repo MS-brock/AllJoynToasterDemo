@@ -30,37 +30,36 @@ namespace Toaster.Consumer
 		public MainPage()
         {
 			dispatcher = Window.Current.CoreWindow.Dispatcher;
-			InitializeToaster();
 
-			this.InitializeComponent();
+            ToasterFinder toasterFinder = new ToasterFinder();
+            toasterFinder.ToasterFound += ToasterFinder_ToasterFound;
+            toasterFinder.Start();
 
-			toasterClient.FindToaster();
+            this.InitializeComponent();            
+
+            
 
 			DarknessLevelSlider.IsEnabled = false;
 			StartToastButton.IsEnabled = false;
 			StopToastButton.IsEnabled = false;
         }
 
-		private void InitializeToaster()
-		{
-			toasterClient = new ToasterClient();
-			toasterClient.ToasterProducerFound += ToasterClient_ToasterProducerFound;
-		}
+        private async void ToasterFinder_ToasterFound(object sender, ToasterFoundEventArgs args)
+        {
+            toasterClient = new ToasterClient(args.Consumer);
 
-		private async void ToasterClient_ToasterProducerFound(object sender, EventArgs e)
-		{
-			toasterClient.Consumer.DarknessLevelChanged += Consumer_DarknessLevelChanged;
-			toasterClient.Consumer.Signals.ToastBurntReceived += Signals_ToastBurntReceived;
+            toasterClient.Consumer.DarknessLevelChanged += Consumer_DarknessLevelChanged;
+            toasterClient.Consumer.Signals.ToastBurntReceived += Signals_ToastBurntReceived;
 
-			string versionText = toasterClient.ToasterVersion.ToString();
+            string versionText = toasterClient.ToasterVersion.ToString();
 
-			await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-			{
-				EnableUI(versionText);
-			});
+            await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                EnableUI(versionText);
+            });
 
-			UpdateSliderValue();
-		}
+            UpdateSliderValue();
+        }
 
 		private void Signals_ToastBurntReceived(org.alljoyn.example.Toaster.ToasterSignals sender, org.alljoyn.example.Toaster.ToasterToastBurntReceivedEventArgs args)
 		{
@@ -104,17 +103,26 @@ namespace Toaster.Consumer
 
 		private void StopToastButton_Click(object sender, RoutedEventArgs e)
 		{
-			toasterClient.StopToasting();
+            if (toasterClient != null)
+            {
+                toasterClient.StopToasting();
+            }
 		}
 
 		private void StartToastButton_Click(object sender, RoutedEventArgs e)
 		{
-			toasterClient.StartToasting();
+            if (toasterClient != null)
+            {
+                toasterClient.StartToasting();
+            }
 		}
 
 		private void DarknessLevelSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
 		{
-			toasterClient.DarknessLevel = Convert.ToByte(DarknessLevelSlider.Value);
+            if (toasterClient != null)
+            {
+                toasterClient.DarknessLevel = Convert.ToByte(DarknessLevelSlider.Value);
+            }
 		}
 	}
 }
